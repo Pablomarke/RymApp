@@ -68,6 +68,11 @@ private extension CharactersViewController {
             self?.prevPage()
         }.store(in: &cancellables)
         
+        viewModel.detailPage.sink { error in
+            print(error)
+        } receiveValue: { [weak self] character in
+            self?.navigateToDetail(character: character)
+        }.store(in: &cancellables)
     }
     
     func nextPage() {
@@ -125,6 +130,12 @@ private extension CharactersViewController {
             self.backButton.isHidden = true
         }
     }
+    
+    func navigateToDetail(character: Character) {
+        let detailedView = DetailViewController(model: character)
+        self.navigationController?.show(detailedView,
+                                         sender: nil)
+    }
 }
 
     // MARK: - Extension de datasource -
@@ -150,10 +161,6 @@ extension CharactersViewController: UICollectionViewDataSource,
     
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
-        NetworkApi.shared.getCharacter(id: viewModel.model.results?[indexPath.row].id ?? 1) { character in
-            let detailedView = DetailViewController(model: character)
-            self.navigationController?.show(detailedView,
-                                            sender: nil)
-        }
+        viewModel.get(index: indexPath.row)
     }
 }

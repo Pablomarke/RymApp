@@ -15,6 +15,7 @@ final class CharactersViewModel {
     var cancellables = Set<AnyCancellable>()
     let nextPage = PassthroughSubject<Void, Error>()
     let prevPage = PassthroughSubject<Void, Error>()
+    let detailPage = PassthroughSubject<Character, Error>()
 
     
     // MARK: - Init -
@@ -35,6 +36,12 @@ final class CharactersViewModel {
             self?.model = allCharacters
             self?.countPage -= 1
             self?.prevPage.send()
+        }
+    }
+    
+    func get(index: Int) {
+        NetworkApi.shared.getCharacter(id: model.results?[index].id ?? 1) { [weak self] character in
+            self?.detailPage.send(character)
         }
     }
 }
