@@ -8,7 +8,7 @@
 import UIKit
 import Kingfisher
 
-class CharacterCell: UICollectionViewCell {
+final class CharacterCell: UICollectionViewCell {
     //MARK: - IBOutlets -
     @IBOutlet weak var backView: UIView!
     @IBOutlet weak var CharacterView: UIImageView!
@@ -16,10 +16,10 @@ class CharacterCell: UICollectionViewCell {
     @IBOutlet weak var statusView: UIView!
     @IBOutlet weak var characterStatus: UILabel!
     
-    // MARK: - Propiedades -
+    // MARK: - Properties -
     static let identifier: String = "CharacterCell"
     
-    // MARK: - Funciones -
+    // MARK: - Methods -
     override func awakeFromNib() {
         super.awakeFromNib()
         cellStyle()
@@ -32,7 +32,16 @@ class CharacterCell: UICollectionViewCell {
         statusView.backgroundColor = nil
     }
     
-    // MARK: - Funciones -
+    func syncCellWithModel(model: Character) {
+        characterName.text = model.name
+        characterStatus.text = model.status
+        let urlImage = URL(string: model.image)
+        CharacterView.kf.setImage(with: urlImage)
+        statusView.backgroundColor = model.statusColor()
+    }
+}
+
+private extension CharacterCell {
     func cellStyle(){
         backView.backgroundColor = Color.mainColor
         characterName.numberOfLines = 2
@@ -41,13 +50,5 @@ class CharacterCell: UICollectionViewCell {
         characterStatus.textColor = .black
         CharacterView.layer.cornerRadius = 40
         statusView.layer.cornerRadius = 8
-    }
-    
-    func syncCellWithModel(model: Character) {
-        characterName.text = model.name
-        characterStatus.text = model.status
-        let urlImage = URL(string: model.image)
-        CharacterView.kf.setImage(with: urlImage)
-        statusView.backgroundColor = model.statusColor()
     }
 }

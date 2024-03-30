@@ -7,7 +7,7 @@
 
 import UIKit
 
-class EpisodesViewController: UIViewController {
+final class EpisodesViewController: UIViewController {
     //MARK: - IBOutlets -
     @IBOutlet weak var backImage: UIImageView!
     @IBOutlet weak var episodeTable: UITableView!
@@ -15,7 +15,7 @@ class EpisodesViewController: UIViewController {
     @IBOutlet weak var buttonSeason: UIButton!
     @IBOutlet weak var seasonMenu: UIMenu!
     
-    // MARK: - Propiedades -
+    // MARK: - Properties -
     var model: Episodes
     
     // MARK: - Init -
@@ -29,7 +29,7 @@ class EpisodesViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Ciclo de vida -
+    // MARK: - Lifecycle -
     override func viewDidLoad() {
         super.viewDidLoad()
         createMenu()
@@ -38,9 +38,10 @@ class EpisodesViewController: UIViewController {
         createTabBarEpisode()
         buttonStyle()
     }
-    
-    // MARK: - Funciones -
-    func viewStyle(){
+}
+
+private extension EpisodesViewController {
+    func viewStyle() {
         backImage.image = LocalImages.locationEpisodeImage
         self.navigationController?.navigationBar.tintColor = Color.secondColor
         navigationItem.title = "Episodes"
@@ -49,7 +50,7 @@ class EpisodesViewController: UIViewController {
         self.view.backgroundColor = Color.mainColor
     }
     
-    func createMenu(){
+    func createMenu() {
         let item1 = UIAction(title: "Season 1") { (action) in
             NetworkApi.shared.getArrayEpisodes(season: "1,2,3,4,5,6,7,8,9,10,11") { episodes in
                 self.model = episodes
@@ -111,7 +112,8 @@ class EpisodesViewController: UIViewController {
 }
 
     // MARK: - Extension Data Source -
-extension EpisodesViewController: UITableViewDataSource {
+extension EpisodesViewController: UITableViewDataSource,
+                                  UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int) -> Int {
         return model.count
@@ -126,16 +128,13 @@ extension EpisodesViewController: UITableViewDataSource {
         cell.syncEpisodeWithCell(model: model[indexPath.row])
         return cell
     }
-}
 
-    // MARK: - Extension Delegate -
-extension EpisodesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
-        NetworkApi.shared.getEpisode(url: (model[indexPath.row].url)) { episode in
+        NetworkApi.shared.getEpisode(url: (model[indexPath.row].url)) { [weak self] episode in
             let detail = EpisodeDetailViewController(episode)
-            self.navigationController?.show(detail,
-                                            sender: nil)
+            self?.navigationController?.show(detail,
+                                             sender: nil)
         }
     }
 }
@@ -172,5 +171,3 @@ extension EpisodesViewController: UITableViewDelegate {
          }
      }
  }
- 
-

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class EpisodeDetailViewController: UIViewController {
+final class EpisodeDetailViewController: UIViewController {
     //MARK: - IBOutlets -
     @IBOutlet weak var backImage: UIImageView!
     @IBOutlet weak var topView: UIView!
@@ -17,7 +17,7 @@ class EpisodeDetailViewController: UIViewController {
     @IBOutlet weak var characterLabel: UILabel!
     @IBOutlet weak var collectionCharacters: UICollectionView!
     
-    // MARK: - Propiedades -
+    // MARK: - Properties -
     var model: Episode
     
     // MARK: - Init -
@@ -32,15 +32,16 @@ class EpisodeDetailViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Ciclo de vida -
+    // MARK: - lifecycle -
     override func viewDidLoad() {
         super.viewDidLoad()
         syncModelWithView()
         createCollectionCharacter()
         viewStyle()
     }
-    
-    // MARK: - Funciones -
+}
+
+private extension EpisodeDetailViewController {
     func viewStyle(){
         self.view.backgroundColor = Color.mainColor
         topView.backgroundColor = Color.secondColor
@@ -66,14 +67,15 @@ class EpisodeDetailViewController: UIViewController {
         collectionCharacters.delegate = self
         collectionCharacters.backgroundColor = .clear
         collectionCharacters.register(UINib(
-                nibName: CharacterCell.identifier,
-                bundle: nil),
+            nibName: CharacterCell.identifier,
+            bundle: nil),
                                       forCellWithReuseIdentifier: CharacterCell.identifier)
     }
 }
 
-    // MARK: - Extension de datasource -
-extension EpisodeDetailViewController: UICollectionViewDataSource {
+// MARK: - Extension de datasource -
+extension EpisodeDetailViewController: UICollectionViewDataSource,
+                                       UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
         return model.characters.count
@@ -86,16 +88,13 @@ extension EpisodeDetailViewController: UICollectionViewDataSource {
                                                                   for: indexPath) as? CharacterCell else {
             return UICollectionViewCell()
         }
-                                                                  
+        
         NetworkApi.shared.getCharacterUrl(url: model.characters[indexPath.row]) { character in
             cell.syncCellWithModel(model: character)
         }
         return cell
     }
-}
-
-    // MARK: - Extension de delegado -
-extension EpisodeDetailViewController: UICollectionViewDelegate{
+    
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
         NetworkApi.shared.getCharacterUrl(url: model.characters[indexPath.row]) { character in
@@ -105,4 +104,3 @@ extension EpisodeDetailViewController: UICollectionViewDelegate{
         }
     }
 }
-

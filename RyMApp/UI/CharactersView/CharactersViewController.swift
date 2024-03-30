@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CharactersViewController: UIViewController {
+final class CharactersViewController: UIViewController {
     //MARK: - IBOutlets -
     @IBOutlet weak var characterBar: UITabBar!
     @IBOutlet weak var backImage: UIImageView!
@@ -17,7 +17,7 @@ class CharactersViewController: UIViewController {
     @IBOutlet weak var nextButton: UIButton!
     @IBOutlet weak var backButton: UIButton!
     
-    // MARK: - Propiedades -
+    // MARK: - Properties -
     var model: AllCharacters
     var countPage = 1
     
@@ -32,7 +32,7 @@ class CharactersViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Ciclo de vida -
+    // MARK: - Lifecycle -
     override func viewDidLoad() {
         super.viewDidLoad()
         viewStyle()
@@ -41,8 +41,21 @@ class CharactersViewController: UIViewController {
         characterBarStyle()
     }
     
-    // MARK: - Funciones -
-    func viewStyle(){
+    // MARK: - methods -
+   
+    
+    // MARK: - Buttons -
+    @IBAction func nextButtonAction(_ sender: Any) {
+        nextPage()
+    }
+    
+    @IBAction func backButtonAction(_ sender: Any) {
+        prevPage()
+    }
+}
+
+private extension CharactersViewController {
+    func viewStyle() {
         backImage.image = LocalImages.charactersImage
         backImage.contentMode = .scaleToFill
         self.view.backgroundColor = Color.mainColor
@@ -52,7 +65,7 @@ class CharactersViewController: UIViewController {
         navigationController?.navigationBar.titleTextAttributes = textAttributes as [NSAttributedString.Key : Any]
     }
     
-    func collectionStyle(){
+    func collectionStyle() {
         collectionCharacters.clearBackground()
         collectionCharacters.dataSource = self
         collectionCharacters.delegate = self
@@ -62,7 +75,7 @@ class CharactersViewController: UIViewController {
             forCellWithReuseIdentifier: CharacterCell.identifier)
     }
     
-    func pagesStyle(){
+    func pagesStyle() {
         pageView.backgroundColor = .clear
         pagesLabel.text = "\(countPage) / \(model.info?.pages  ?? 1)"
         pagesLabel.textColor = Color.secondColor
@@ -73,7 +86,7 @@ class CharactersViewController: UIViewController {
         }
     }
     
-    func characterBarStyle(){
+    func characterBarStyle() {
         characterBar.delegate = self
         characterBar.tintColor = Color.secondColor
         characterBar.barTintColor = Color.mainColor
@@ -81,24 +94,24 @@ class CharactersViewController: UIViewController {
     }
     
     func nextPage(){
-        NetworkApi.shared.pages(url: (model.info?.next ?? "")) { allCharacters in
-            self.model = allCharacters
-            self.countPage += 1
-            self.showBackButton()
-            self.collectionCharacters.reloadData()
+        NetworkApi.shared.pages(url: (model.info?.next ?? "")) { [weak self] allCharacters in
+            self?.model = allCharacters
+            self?.countPage += 1
+            self?.showBackButton()
+            self?.collectionCharacters.reloadData()
         }
     }
     
-    func prevPage(){
-        NetworkApi.shared.pages(url: (model.info?.prev ?? "")) { allCharacters in
-            self.model = allCharacters
-            self.countPage -= 1
-            self.showPrevButton()
-            self.collectionCharacters.reloadData()
+    func prevPage() {
+        NetworkApi.shared.pages(url: (model.info?.prev ?? "")) { [weak self] allCharacters in
+            self?.model = allCharacters
+            self?.countPage -= 1
+            self?.showPrevButton()
+            self?.collectionCharacters.reloadData()
         }
     }
     
-    func showBackButton(){
+    func showBackButton() {
         self.pagesLabel.text = "\(self.countPage) / \(self.model.info?.pages ?? 1)"
         self.backButton.isHidden = false
         if self.model.info?.next == nil {
@@ -106,26 +119,18 @@ class CharactersViewController: UIViewController {
         }
     }
     
-    func showPrevButton(){
+    func showPrevButton() {
         self.pagesLabel.text = "\(self.countPage) / \(self.model.info?.pages ?? 1)"
         self.nextButton.isHidden = false
         if self.model.info?.prev == nil {
             self.backButton.isHidden = true
         }
     }
-    
-    // MARK: - Botones -
-    @IBAction func nextButtonAction(_ sender: Any) {
-        nextPage()
-    }
-    
-    @IBAction func backButtonAction(_ sender: Any) {
-        prevPage()
-    }
 }
 
     // MARK: - Extension de datasource -
-extension CharactersViewController: UICollectionViewDataSource {
+extension CharactersViewController: UICollectionViewDataSource,
+                                    UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
         return model.results?.count ?? 0
@@ -143,10 +148,7 @@ extension CharactersViewController: UICollectionViewDataSource {
         } 
         return cell
     }
-}
-
-    // MARK: - Extension de delegado -
-extension CharactersViewController: UICollectionViewDelegate {
+    
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
         NetworkApi.shared.getCharacter(id: model.results?[indexPath.row].id ?? 1) { character in

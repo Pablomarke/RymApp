@@ -21,23 +21,13 @@ class TableViewCell: UITableViewCell {
         cellStyle()
     }
     
-    // MARK: - Funciones -
-    func cellStyle(){
-        contentView.backgroundColor = Color.clearColor
-        self.backgroundColor = UIColor.clear
-        titleLabel.textColor = .black
-        dataLabel.textColor = Color.mainColor
-        titleView.cornerToTableView()
-        dataView.cornerToTableView()
-    }
-    
+    // MARK: - Methods -
     override func prepareForReuse() {
         super.prepareForReuse()
         titleLabel.text = nil
         dataLabel.text = nil
     }
     
-    // MARK: - Funciones -
     func syncEpisodeWithCell(model: Episode) {
         titleLabel.text = model.episode
         dataLabel.text = model.name
@@ -49,4 +39,13 @@ class TableViewCell: UITableViewCell {
     }
 }
 
-
+private extension TableViewCell {
+    func cellStyle(){
+        contentView.backgroundColor = Color.clearColor
+        self.backgroundColor = UIColor.clear
+        titleLabel.textColor = .black
+        dataLabel.textColor = Color.mainColor
+        titleView.cornerToTableView()
+        dataView.cornerToTableView()
+    }
+}

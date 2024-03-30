@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HomeViewController: UIViewController {
+final class HomeViewController: UIViewController {
     //MARK: - IBOutlets -
     @IBOutlet weak var backImage: UIImageView!
     @IBOutlet weak var homeButton: UIButton!
@@ -21,7 +21,16 @@ class HomeViewController: UIViewController {
         buttonStyle()
     }
     
-    // MARK: - Funciones -
+    // MARK: - Methods -
+   
+    
+    // MARK: - Buttons -
+    @IBAction func homeBAction(_ sender: Any) {
+        navigateToCharacters()
+    }
+}
+
+private extension HomeViewController {
     func viewStyle(){
         backImage.image = LocalImages.homeImage
         backImage.contentMode = .scaleToFill
@@ -37,17 +46,10 @@ class HomeViewController: UIViewController {
     }
     
     func navigateToCharacters(){
-        NetworkApi.shared.getAllCharacters { allCharacters in
+        NetworkApi.shared.getAllCharacters { [weak self] allCharacters in
             let viewController = CharactersViewController(allCharacters)
-            self.navigationController?.setViewControllers([viewController],
+            self?.navigationController?.setViewControllers([viewController],
                                                           animated: true)
         }
     }
-    
-    // MARK: - Botones -
-    @IBAction func homeBAction(_ sender: Any) {
-        navigateToCharacters()
-    }
 }
-
-
