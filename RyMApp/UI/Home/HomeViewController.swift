@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HomeViewController: UIViewController {
+final class HomeViewController: UIViewController {
     //MARK: - IBOutlets -
     @IBOutlet weak var backImage: UIImageView!
     @IBOutlet weak var homeButton: UIButton!
@@ -21,13 +21,22 @@ class HomeViewController: UIViewController {
         buttonStyle()
     }
     
-    // MARK: - Funciones -
-    func viewStyle(){
+    // MARK: - Methods -
+   
+    
+    // MARK: - Buttons -
+    @IBAction func homeBAction(_ sender: Any) {
+        navigateToCharacters()
+    }
+}
+
+private extension HomeViewController {
+    func viewStyle() {
         backImage.image = LocalImages.homeImage
         backImage.contentMode = .scaleToFill
     }
     
-    func buttonStyle(){
+    func buttonStyle() {
         buttonLabel.text = "Enter"
         buttonLabel.font = Font.size32
         buttonLabel.textAlignment = .center
@@ -36,18 +45,11 @@ class HomeViewController: UIViewController {
         buttonImage.layer.cornerRadius = 60
     }
     
-    func navigateToCharacters(){
-        NetworkApi.shared.getAllCharacters { allCharacters in
-            let viewController = CharactersViewController(allCharacters)
-            self.navigationController?.setViewControllers([viewController],
+    func navigateToCharacters() {
+        NetworkApi.shared.getAllCharacters { [weak self] allCharacters in
+            let viewController = CharactersViewController(viewModel: CharactersViewModel(allCharacters))
+            self?.navigationController?.setViewControllers([viewController],
                                                           animated: true)
         }
     }
-    
-    // MARK: - Botones -
-    @IBAction func homeBAction(_ sender: Any) {
-        navigateToCharacters()
-    }
 }
-
-

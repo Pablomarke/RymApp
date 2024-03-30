@@ -7,7 +7,7 @@
 
 import UIKit
 
-class LocationViewController: UIViewController {
+final class LocationViewController: BaseViewController {
     //MARK: - IBOutlets -
     @IBOutlet weak var locationTable: UITableView!
     @IBOutlet weak var locationTabBar: UITabBar!
@@ -18,7 +18,7 @@ class LocationViewController: UIViewController {
     @IBOutlet weak var pagesView: UIView!
     @IBOutlet weak var pageLabel: UILabel!
     
-    // MARK: - Propiedades -
+    // MARK: - Properties -
     var model: AllLocations
     var pageCount = 1
     
@@ -34,18 +34,28 @@ class LocationViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Ciclo de vida -
+    // MARK: - Lifecycle -
     override func viewDidLoad() {
         super.viewDidLoad()
         locationTableStyle()
         navigationBarStyle()
         viewStyle()
         pagesViewStyle()
-        locTabBar()
+        createTabBar(tabBar: locationTabBar)
+    }
+
+    // MARK: - Buttons -
+    @IBAction func nextBAct(_ sender: Any) {
+        nextPage()
     }
     
-    // MARK: - Funciones -
-    func viewStyle(){
+    @IBAction func backBAct(_ sender: Any) {
+        prevPage()
+    }
+}
+
+private extension LocationViewController {
+    func viewStyle() {
         self.view.backgroundColor = Color.mainColor
         backImage.image = LocalImages.locationEpisodeImage
     }
@@ -60,14 +70,14 @@ class LocationViewController: UIViewController {
         }
     }
     
-    func navigationBarStyle(){
+    func navigationBarStyle() {
         self.navigationController?.navigationBar.tintColor = Color.secondColor
         navigationItem.title = "Locations"
         let textAttributes = [NSAttributedString.Key.foregroundColor: Color.secondColor]
         navigationController?.navigationBar.titleTextAttributes = textAttributes as [NSAttributedString.Key : Any]
     }
     
-    func locationTableStyle(){
+    func locationTableStyle() {
         locationTable.dataSource = self
         locationTable.delegate = self
         locationTable.register(UINib(nibName: TableViewCell.identifier,
@@ -76,56 +86,39 @@ class LocationViewController: UIViewController {
         locationTable.backgroundColor = .clear
     }
     
-    func locTabBar() {
-        locationTabBar.delegate = self
-        locationTabBar.isTranslucent = false
-        locationTabBar.barTintColor = Color.mainColor
-    }
-    
-    func nextPage(){
-        NetworkApi.shared.pagesLocation(url: (model.info.next)! ) { AllLocations in
-            self.model = AllLocations
-            self.locationTable.reloadData()
-            self.pageCount += 1
-            self.pageLabel.text = "\(self.pageCount) / \(self.model.info.pages )"
-            self.backButton.isHidden = false
-            if self.model.info.next == nil {
-                self.nextButton.isHidden = true
+    func nextPage() {
+        NetworkApi.shared.pagesLocation(url: (model.info.next)! ) { [weak self] AllLocations in
+            self?.model = AllLocations
+            self?.locationTable.reloadData()
+            self?.pageCount += 1
+            self?.pageLabel.text = "\(self?.pageCount) / \(self?.model.info.pages )"
+            self?.backButton.isHidden = false
+            if self?.model.info.next == nil {
+                self?.nextButton.isHidden = true
             }
         }
     }
     
     func prevPage() {
-        NetworkApi.shared.pagesLocation(url: (model.info.prev)!) { AllLocations in
-            self.model = AllLocations
-            self.locationTable.reloadData()
-            self.pageCount -= 1
-            self.pageLabel.text = "\(self.pageCount) / \(self.model.info.pages )"
-            self.nextButton.isHidden = false
-            if self.model.info.prev == nil {
+        NetworkApi.shared.pagesLocation(url: (model.info.prev)!) { [weak self] AllLocations in
+            self?.model = AllLocations
+            self?.locationTable.reloadData()
+            self?.pageCount -= 1
+            self?.pageLabel.text = "\(self?.pageCount) / \(self?.model.info.pages)"
+            self?.nextButton.isHidden = false
+            if self?.model.info.prev == nil {
                 
-                self.backButton.isHidden = true
+                self?.backButton.isHidden = true
             }
         }
     }
-    
-    // MARK: - Botones -
-    @IBAction func nextBAct(_ sender: Any) {
-        nextPage()
-    }
-    
-    @IBAction func backBAct(_ sender: Any) {
-        prevPage()
-    }
 }
 
-    // MARK: - Extension de datasource -
-extension LocationViewController: UITableViewDataSource {
-    
-    func tableView(
-        _ tableView: UITableView,
-        numberOfRowsInSection section: Int
-    ) -> Int {
+    // MARK: - Extension datasource -
+extension LocationViewController: UITableViewDataSource,
+                                  UITableViewDelegate {
+    func tableView(_ tableView: UITableView,
+                   numberOfRowsInSection section: Int) -> Int {
         return model.results.count
     }
     
@@ -138,54 +131,13 @@ extension LocationViewController: UITableViewDataSource {
         cell.syncLocationWithCell(model: model.results[indexPath.row])
         return cell
     }
-}
 
-    // MARK: - Extension de delegado -
-extension LocationViewController: UITableViewDelegate {
-    func tableView(
-        _ tableView: UITableView,
-        didSelectRowAt indexPath: IndexPath
-    ) {
-        NetworkApi.shared.getLocationUrl(url: (model.results[indexPath.row].url)) { locations in
+    func tableView(_ tableView: UITableView,
+                   didSelectRowAt indexPath: IndexPath) {
+        NetworkApi.shared.getLocationUrl(url: (model.results[indexPath.row].url)) { [weak self] locations in
          let detail = LocationDetailViewController(locations)
-         self.navigationController?.show(detail,
-         sender: nil)
+         self?.navigationController?.show(detail,
+                                          sender: nil)
          }
     }
 }
-
-    // MARK: - Tab Bar -
-extension LocationViewController: UITabBarDelegate {
-    func tabBar(
-        _ tabBar: UITabBar,
-        didSelect item: UITabBarItem
-    ) {
-        switch item.title {
-            case "Characters" :
-            NetworkApi.shared.getAllCharacters { allCharacters in
-                let myView = CharactersViewController(allCharacters)
-                self.navigationController?.setViewControllers([myView],
-                                                              animated: true)
-            }
-            case "Search" :
-            NetworkApi.shared.getAllCharacters { allCharacters in
-                let myView = SearchViewController(allCharacters)
-                self.navigationController?.setViewControllers([myView],
-                                                              animated: true)
-            }
-            case "Episodes" :
-            NetworkApi.shared.getArrayEpisodes(season: "1,2,3,4,5,6,7,8,9,10,11") { episodes in
-                let myView = EpisodesViewController(episodes)
-                self.navigationController?.setViewControllers([myView],
-                                                              animated: true)
-            }
-            case "Locations" :
-                break
-            case .none:
-                break
-            case .some(_):
-                break
-        }
-    }
-}
-

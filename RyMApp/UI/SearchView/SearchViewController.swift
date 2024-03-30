@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SearchViewController: UIViewController {
+final class SearchViewController: BaseViewController {
     //MARK: - IBOutlets -
     @IBOutlet weak var tabBarSearch: UITabBar!
     @IBOutlet weak var searchButton: UIButton!
@@ -30,18 +30,24 @@ class SearchViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Ciclo de vida -
+    // MARK: - Lifecycle -
     override func viewDidLoad() {
         super.viewDidLoad()
         viewStyle()
         searchTextStyle()
         createButtonStyle()
-        createTabBar()
+        createTabBar(tabBar: tabBarSearch)
         createSearchCollection()
     }
     
-    // MARK: - Funciones -
-    func viewStyle(){
+    // MARK: - Buttons -
+    @IBAction func searchAction(_ sender: Any) {
+        searchCharacters()
+    }
+}
+
+private extension SearchViewController {
+    func viewStyle() {
         self.navigationController?.navigationBar.barTintColor = Color.mainColor
         self.view.backgroundColor = Color.mainColor
         self.navigationController?.navigationBar.tintColor = Color.secondColor
@@ -52,28 +58,23 @@ class SearchViewController: UIViewController {
         backImage.contentMode = .scaleAspectFill
     }
     
-    func searchTextStyle(){
+    func searchTextStyle() {
         searchText.placeholder = "Enter a name"
         searchText.layer.cornerRadius = 40
         searchText.backgroundColor = Color.secondColor
     }
     
-    func createButtonStyle(){
+    func createButtonStyle() {
         buttonView.backgroundColor = Color.secondColor
         buttonView.layer.cornerRadius = 24
-        searchButton.setTitle("Search", 
+        searchButton.setTitle("Search",
                               for: .normal)
         searchButton.tintColor = .black
     }
     
-    func createTabBar(){
-        tabBarSearch.delegate = self
-        tabBarSearch.tintColor = Color.secondColor
-        tabBarSearch.barTintColor = Color.mainColor
-        tabBarSearch.isTranslucent = false
-    }
     
-    func createSearchCollection(){
+    
+    func createSearchCollection() {
         searchCollection.clearBackground()
         searchCollection.dataSource = self
         searchCollection.delegate = self
@@ -83,7 +84,7 @@ class SearchViewController: UIViewController {
         searchCollection.isHidden = true
     }
     
-    func searchCharacters(){
+    func searchCharacters() {
         let newName = searchText.text
         if newName == "" {
             searchText.placeholder = "Please, enter a name"
@@ -96,15 +97,11 @@ class SearchViewController: UIViewController {
             }
         }
     }
-    
-    // MARK: - Botones -
-    @IBAction func searchAction(_ sender: Any) {
-        searchCharacters()
-    }
 }
 
-    // MARK: - Extension de datasource -
-extension SearchViewController: UICollectionViewDataSource {
+// MARK: - Extension de datasource -
+extension SearchViewController: UICollectionViewDataSource,
+                                UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
         return model.results?.count ?? 0
@@ -120,57 +117,21 @@ extension SearchViewController: UICollectionViewDataSource {
         if let modelForCell = model.results?[indexPath.row] {
             cell.syncCellWithModel(model: modelForCell)
         }
-            
+        
         return cell
     }
-}
-
-    // MARK: - Extension de delegado -
-extension SearchViewController: UICollectionViewDelegate{
+    
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
         if let myID = model.results?[indexPath.row].id {
-            NetworkApi.shared.getCharacter(id: myID ) { character in
+            NetworkApi.shared.getCharacter(id: myID ) { [weak self] character in
                 let detailedView = DetailViewController(model: character)
-                self.navigationController?.showDetailViewController(detailedView,
-                                                                    sender: nil)
+                self?.navigationController?.showDetailViewController(detailedView,
+                                                                     sender: nil)
             }
         }
     }
 }
 
-    // MARK: - UItabBar -
-extension SearchViewController: UITabBarDelegate {
-    func tabBar(
-        _ tabBar: UITabBar,
-        didSelect item: UITabBarItem
-    ) {
-        switch item.title {
-            case "Characters" :
-            NetworkApi.shared.getAllCharacters { allCharacters in
-                let myView = CharactersViewController(allCharacters)
-                self.navigationController?.setViewControllers([myView],
-                                                              animated: true)
-            }
-            case "Search" :
-                break
-                
-            case "Episodes" :
-            NetworkApi.shared.getArrayEpisodes(season: "1,2,3,4,5,6,7,8,9,10,11") { episodes in
-                let myView = EpisodesViewController(episodes)
-                self.navigationController?.setViewControllers([myView],
-                                                              animated: true)
-            }
-            case "Locations" :
-            NetworkApi.shared.getAllLocations() { locations in
-                let myView = LocationViewController( locations)
-                self.navigationController?.setViewControllers([myView],
-                                                              animated: true)
-            }
-            case .none:
-                break
-            case .some(_):
-                break
-        }
-    }
-}
+
+

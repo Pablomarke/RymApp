@@ -7,7 +7,7 @@
 
 import UIKit
 
-class LocationDetailViewController: UIViewController {
+final class LocationDetailViewController: UIViewController {
     //MARK: - IBOutlets -
     @IBOutlet weak var backImage: UIImageView!
     @IBOutlet weak var topView: UIView!
@@ -17,7 +17,7 @@ class LocationDetailViewController: UIViewController {
     @IBOutlet weak var residentsLabel: UILabel!
     @IBOutlet weak var residentsCollection: UICollectionView!
     
-    // MARK: - Propiedades -
+    // MARK: - Properties -
     var model: Location
     
     // MARK: - Init -
@@ -31,15 +31,16 @@ class LocationDetailViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Ciclo de vida -
+    // MARK: - Lifecycle -
     override func viewDidLoad() {
         super.viewDidLoad()
         viewStyle()
         syncModelWithView()
         createResidentCollection()
     }
-    
-    // MARK: - Funciones -
+}
+
+private extension LocationDetailViewController {
     func viewStyle(){
         self.view.backgroundColor = Color.mainColor
         backImage.image = LocalImages.locationDetailImage
@@ -76,7 +77,8 @@ class LocationDetailViewController: UIViewController {
 }
 
     // MARK: - Extension de datasource -
-extension LocationDetailViewController: UICollectionViewDataSource {
+extension LocationDetailViewController: UICollectionViewDataSource,
+                                        UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
         return model.residents.count
@@ -94,15 +96,12 @@ extension LocationDetailViewController: UICollectionViewDataSource {
         }
         return cell
     }
-}
 
-    // MARK: - Extension de delegate -
-extension LocationDetailViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, 
+    func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
-        NetworkApi.shared.getCharacterUrl(url: model.residents[indexPath.row]) { character in
+        NetworkApi.shared.getCharacterUrl(url: model.residents[indexPath.row]) { [weak self ]character in
             let detailView = DetailViewController(model: character)
-            self.navigationController?.showDetailViewController(detailView,
+            self?.navigationController?.showDetailViewController(detailView,
                                                                 sender: nil)
         }
     }

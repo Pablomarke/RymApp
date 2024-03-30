@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DetailViewController: UIViewController {
+final class DetailViewController: BaseViewController {
     
     //MARK: - IBOutlets -
     @IBOutlet weak var backImage: UIImageView!
@@ -16,39 +16,29 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var colorCharacter: UIView!
     @IBOutlet weak var colorStatus: UIView!
     @IBOutlet weak var statusLabel: UILabel!
-    
     @IBOutlet weak var speciesLabel: UILabel!
     @IBOutlet weak var typeLabel: UILabel!
     @IBOutlet weak var genderLabel: UILabel!
     @IBOutlet weak var locationNameLabel: UILabel!
     @IBOutlet weak var originLabel: UILabel!
-    
     @IBOutlet weak var episodeTable: UITableView!
-    
     @IBOutlet weak var speciesView: UIView!
     @IBOutlet weak var typeView: UIView!
     @IBOutlet weak var genderView: UIView!
-    
     @IBOutlet weak var locationView: UIView!
-    
     @IBOutlet weak var originView: UIView!
-    
     @IBOutlet weak var tSpeciesView: UIView!
     @IBOutlet weak var tSpeciesLabel: UILabel!
-    
     @IBOutlet weak var tTypeView: UIView!
     @IBOutlet weak var tTypeLabel: UILabel!
-    
     @IBOutlet weak var tGendeView: UIView!
     @IBOutlet weak var tGenderLabel: UILabel!
-    
     @IBOutlet weak var tLocationView: UIView!
     @IBOutlet weak var tLocationLabel: UILabel!
-    
     @IBOutlet weak var tOriginaView: UIView!
     @IBOutlet weak var tOriginLabel: UILabel!
     
-    // MARK: - Propiedades -
+    // MARK: - Properties -
     var model: Character
     
     // MARK: - Init -
@@ -62,7 +52,7 @@ class DetailViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Ciclo de vida -
+    // MARK: - Lifecycle -
     override func viewDidLoad() {
         super.viewDidLoad()
         syncCharacterModelwithView()
@@ -70,8 +60,9 @@ class DetailViewController: UIViewController {
         createViewsforData()
         viewStyle()
     }
-    
-    // MARK: - Funciones -
+}
+
+private extension DetailViewController {
     func viewStyle(){
         self.view.backgroundColor = Color.mainColor
         backImage.image = LocalImages.detailImage
@@ -135,7 +126,8 @@ class DetailViewController: UIViewController {
     }
 }
     // MARK: - Extension de datasource -
-extension DetailViewController: UITableViewDataSource {
+extension DetailViewController: UITableViewDataSource,
+                                UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int) -> Int {
         return model.episode.count
@@ -152,10 +144,7 @@ extension DetailViewController: UITableViewDataSource {
         }
         return detailCell
     }
-}
 
-    // MARK: - Extension de delegado -
-extension DetailViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
         NetworkApi.shared.getEpisode(url: model.episode[indexPath.row]) { episode in
