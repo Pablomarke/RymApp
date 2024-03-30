@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class LocationViewController: UIViewController {
+final class LocationViewController: BaseViewController {
     //MARK: - IBOutlets -
     @IBOutlet weak var locationTable: UITableView!
     @IBOutlet weak var locationTabBar: UITabBar!
@@ -41,7 +41,7 @@ final class LocationViewController: UIViewController {
         navigationBarStyle()
         viewStyle()
         pagesViewStyle()
-        locTabBar()
+        createTabBar(tabBar: locationTabBar)
     }
 
     // MARK: - Buttons -
@@ -55,7 +55,7 @@ final class LocationViewController: UIViewController {
 }
 
 private extension LocationViewController {
-    func viewStyle(){
+    func viewStyle() {
         self.view.backgroundColor = Color.mainColor
         backImage.image = LocalImages.locationEpisodeImage
     }
@@ -70,14 +70,14 @@ private extension LocationViewController {
         }
     }
     
-    func navigationBarStyle(){
+    func navigationBarStyle() {
         self.navigationController?.navigationBar.tintColor = Color.secondColor
         navigationItem.title = "Locations"
         let textAttributes = [NSAttributedString.Key.foregroundColor: Color.secondColor]
         navigationController?.navigationBar.titleTextAttributes = textAttributes as [NSAttributedString.Key : Any]
     }
     
-    func locationTableStyle(){
+    func locationTableStyle() {
         locationTable.dataSource = self
         locationTable.delegate = self
         locationTable.register(UINib(nibName: TableViewCell.identifier,
@@ -86,13 +86,7 @@ private extension LocationViewController {
         locationTable.backgroundColor = .clear
     }
     
-    func locTabBar() {
-        locationTabBar.delegate = self
-        locationTabBar.isTranslucent = false
-        locationTabBar.barTintColor = Color.mainColor
-    }
-    
-    func nextPage(){
+    func nextPage() {
         NetworkApi.shared.pagesLocation(url: (model.info.next)! ) { [weak self] AllLocations in
             self?.model = AllLocations
             self?.locationTable.reloadData()
@@ -145,40 +139,5 @@ extension LocationViewController: UITableViewDataSource,
          self?.navigationController?.show(detail,
                                           sender: nil)
          }
-    }
-}
-
-    // MARK: - Tab Bar -
-extension LocationViewController: UITabBarDelegate {
-    func tabBar(
-        _ tabBar: UITabBar,
-        didSelect item: UITabBarItem
-    ) {
-        switch item.title {
-            case "Characters" :
-            NetworkApi.shared.getAllCharacters { allCharacters in
-                let myView = CharactersViewController(allCharacters)
-                self.navigationController?.setViewControllers([myView],
-                                                              animated: true)
-            }
-            case "Search" :
-            NetworkApi.shared.getAllCharacters { allCharacters in
-                let myView = SearchViewController(allCharacters)
-                self.navigationController?.setViewControllers([myView],
-                                                              animated: true)
-            }
-            case "Episodes" :
-            NetworkApi.shared.getArrayEpisodes(season: "1,2,3,4,5,6,7,8,9,10,11") { episodes in
-                let myView = EpisodesViewController(episodes)
-                self.navigationController?.setViewControllers([myView],
-                                                              animated: true)
-            }
-            case "Locations" :
-                break
-            case .none:
-                break
-            case .some(_):
-                break
-        }
     }
 }

@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class SearchViewController: UIViewController {
+final class SearchViewController: BaseViewController {
     //MARK: - IBOutlets -
     @IBOutlet weak var tabBarSearch: UITabBar!
     @IBOutlet weak var searchButton: UIButton!
@@ -36,11 +36,17 @@ final class SearchViewController: UIViewController {
         viewStyle()
         searchTextStyle()
         createButtonStyle()
-        createTabBar()
+        createTabBar(tabBar: tabBarSearch)
         createSearchCollection()
     }
     
-    // MARK: - Funciones -
+    // MARK: - Buttons -
+    @IBAction func searchAction(_ sender: Any) {
+        searchCharacters()
+    }
+}
+
+private extension SearchViewController {
     func viewStyle() {
         self.navigationController?.navigationBar.barTintColor = Color.mainColor
         self.view.backgroundColor = Color.mainColor
@@ -66,12 +72,7 @@ final class SearchViewController: UIViewController {
         searchButton.tintColor = .black
     }
     
-    func createTabBar() {
-        tabBarSearch.delegate = self
-        tabBarSearch.tintColor = Color.secondColor
-        tabBarSearch.barTintColor = Color.mainColor
-        tabBarSearch.isTranslucent = false
-    }
+    
     
     func createSearchCollection() {
         searchCollection.clearBackground()
@@ -95,11 +96,6 @@ final class SearchViewController: UIViewController {
                 self.searchCollection.reloadData()
             }
         }
-    }
-    
-    // MARK: - Buttons -
-    @IBAction func searchAction(_ sender: Any) {
-        searchCharacters()
     }
 }
 
@@ -137,38 +133,5 @@ extension SearchViewController: UICollectionViewDataSource,
     }
 }
 
-// MARK: - UItabBar -
-extension SearchViewController: UITabBarDelegate {
-    func tabBar(
-        _ tabBar: UITabBar,
-        didSelect item: UITabBarItem
-    ) {
-        switch item.title {
-            case "Characters" :
-                NetworkApi.shared.getAllCharacters { allCharacters in
-                    let myView = CharactersViewController(allCharacters)
-                    self.navigationController?.setViewControllers([myView],
-                                                                  animated: true)
-                }
-            case "Search" :
-                break
-                
-            case "Episodes" :
-                NetworkApi.shared.getArrayEpisodes(season: "1,2,3,4,5,6,7,8,9,10,11") { episodes in
-                    let myView = EpisodesViewController(episodes)
-                    self.navigationController?.setViewControllers([myView],
-                                                                  animated: true)
-                }
-            case "Locations" :
-                NetworkApi.shared.getAllLocations() { locations in
-                    let myView = LocationViewController( locations)
-                    self.navigationController?.setViewControllers([myView],
-                                                                  animated: true)
-                }
-            case .none:
-                break
-            case .some(_):
-                break
-        }
-    }
-}
+
+

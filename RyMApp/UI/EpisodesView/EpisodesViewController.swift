@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class EpisodesViewController: UIViewController {
+final class EpisodesViewController: BaseViewController {
     //MARK: - IBOutlets -
     @IBOutlet weak var backImage: UIImageView!
     @IBOutlet weak var episodeTable: UITableView!
@@ -35,7 +35,7 @@ final class EpisodesViewController: UIViewController {
         createMenu()
         createEpisodeTable()
         viewStyle()
-        createTabBarEpisode()
+        createTabBar(tabBar: tabBarEpisode)
         buttonStyle()
     }
 }
@@ -90,19 +90,12 @@ private extension EpisodesViewController {
         buttonSeason.showsMenuAsPrimaryAction = true
     }
     
-    func createEpisodeTable(){
+    func createEpisodeTable() {
         episodeTable.dataSource = self
         episodeTable.delegate = self
         episodeTable.register(UINib(nibName: TableViewCell.identifier,
                                     bundle: nil), forCellReuseIdentifier: TableViewCell.identifier)
         episodeTable.backgroundColor = .clear
-    }
-    
-    func createTabBarEpisode(){
-        tabBarEpisode.tintColor = Color.secondColor
-        tabBarEpisode.barTintColor = Color.mainColor
-        tabBarEpisode.isTranslucent = false
-        tabBarEpisode.delegate = self
     }
     
     func buttonStyle(){
@@ -138,36 +131,3 @@ extension EpisodesViewController: UITableViewDataSource,
         }
     }
 }
-
-    // MARK: - TabBar -
- extension EpisodesViewController: UITabBarDelegate {
-     func tabBar(_ tabBar: UITabBar,
-                 didSelect item: UITabBarItem) {
-         switch item.title {
-             case "Characters" :
-             NetworkApi.shared.getAllCharacters { allCharacters in
-                 let myView = CharactersViewController(allCharacters)
-                 self.navigationController?.setViewControllers([myView],
-                                                               animated: true)
-             }
-             case "Search" :
-             NetworkApi.shared.getAllCharacters { allCharacters in
-                 let myView = SearchViewController(allCharacters)
-                 self.navigationController?.setViewControllers([myView],
-                                                               animated: true)
-             }
-             case "Episodes" :
-                 break
-             case "Locations" :
-             NetworkApi.shared.getAllLocations() { locations in
-                 let myView = LocationViewController( locations)
-                 self.navigationController?.setViewControllers([myView],
-                                                               animated: true)
-             }
-             case .none:
-                 break
-             case .some(_):
-                 break
-         }
-     }
- }

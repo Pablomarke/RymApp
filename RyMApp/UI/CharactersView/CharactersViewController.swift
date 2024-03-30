@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class CharactersViewController: UIViewController {
+final class CharactersViewController: BaseViewController {
     //MARK: - IBOutlets -
     @IBOutlet weak var characterBar: UITabBar!
     @IBOutlet weak var backImage: UIImageView!
@@ -38,7 +38,7 @@ final class CharactersViewController: UIViewController {
         viewStyle()
         collectionStyle()
         pagesStyle()
-        characterBarStyle()
+        createTabBar(tabBar: characterBar)
     }
     
     // MARK: - methods -
@@ -85,14 +85,7 @@ private extension CharactersViewController {
             backButton.isHidden = true
         }
     }
-    
-    func characterBarStyle() {
-        characterBar.delegate = self
-        characterBar.tintColor = Color.secondColor
-        characterBar.barTintColor = Color.mainColor
-        characterBar.isTranslucent = false
-    }
-    
+   
     func nextPage(){
         NetworkApi.shared.pages(url: (model.info?.next ?? "")) { [weak self] allCharacters in
             self?.model = allCharacters
@@ -156,40 +149,6 @@ extension CharactersViewController: UICollectionViewDataSource,
                 model: character)
             self.navigationController?.show(detailedView,
                                             sender: nil)
-        }
-    }
-}
-
-    // MARK: - Extension de tabBar -
-extension CharactersViewController: UITabBarDelegate {
-    func tabBar(_ tabBar: UITabBar,
-                didSelect item: UITabBarItem) {
-        switch item.title {
-            case "Characters" :
-                break
-            
-            case "Search" :
-            NetworkApi.shared.getAllCharacters { allCharacters in
-                let myView = SearchViewController(allCharacters)
-                self.navigationController?.setViewControllers([myView],
-                                                              animated: true)
-            }
-            case "Episodes" :
-            NetworkApi.shared.getArrayEpisodes(season: "1,2,3,4,5,6,7,8,9,10,11") { episodes in
-                let myView = EpisodesViewController(episodes)
-                self.navigationController?.setViewControllers([myView],
-                                                              animated: true)
-            }
-            case "Locations" :
-            NetworkApi.shared.getAllLocations() { locations in
-                let myView = LocationViewController( locations)
-                self.navigationController?.setViewControllers([myView],
-                                                              animated: true)
-            }
-            case .none:
-                break
-            case .some(_):
-                break
         }
     }
 }
