@@ -31,12 +31,12 @@ final class HomeViewController: UIViewController {
 }
 
 private extension HomeViewController {
-    func viewStyle(){
+    func viewStyle() {
         backImage.image = LocalImages.homeImage
         backImage.contentMode = .scaleToFill
     }
     
-    func buttonStyle(){
+    func buttonStyle() {
         buttonLabel.text = "Enter"
         buttonLabel.font = Font.size32
         buttonLabel.textAlignment = .center
@@ -45,9 +45,9 @@ private extension HomeViewController {
         buttonImage.layer.cornerRadius = 60
     }
     
-    func navigateToCharacters(){
+    func navigateToCharacters() {
         NetworkApi.shared.getAllCharacters { [weak self] allCharacters in
-            let viewController = CharactersViewController(allCharacters)
+            let viewController = CharactersViewController(viewModel: CharactersViewModel(allCharacters))
             self?.navigationController?.setViewControllers([viewController],
                                                           animated: true)
         }

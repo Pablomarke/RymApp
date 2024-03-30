@@ -34,8 +34,8 @@ final class TabBarManager {
         switch title {
             case .characters:
                 NetworkApi.shared.getAllCharacters { allCharacters in
-                    let myView = CharactersViewController(allCharacters)
-                    navigationController.setViewControllers([myView], 
+                    let myView = CharactersViewController(viewModel: CharactersViewModel(allCharacters))
+                    navigationController.setViewControllers([myView],
                                                             animated: true)
                 }
             case .episodes:
