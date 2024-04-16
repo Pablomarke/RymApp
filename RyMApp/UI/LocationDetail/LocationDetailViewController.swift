@@ -100,7 +100,7 @@ extension LocationDetailViewController: UICollectionViewDataSource,
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
         NetworkApi.shared.getCharacterUrl(url: model.residents[indexPath.row]) { [weak self ]character in
-            let detailView = DetailViewController(model: character)
+            let detailView = DetailViewController(viewModel: CharacterDetailViewModel(model: character))
             self?.navigationController?.showDetailViewController(detailView,
                                                                 sender: nil)
         }

@@ -132,7 +132,7 @@ private extension CharactersViewController {
     }
     
     func navigateToDetail(character: Character) {
-        let detailedView = DetailViewController(model: character)
+        let detailedView = DetailViewController(viewModel: CharacterDetailViewModel(model: character))
         self.navigationController?.show(detailedView,
                                          sender: nil)
     }

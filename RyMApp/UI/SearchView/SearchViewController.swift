@@ -125,7 +125,7 @@ extension SearchViewController: UICollectionViewDataSource,
                         didSelectItemAt indexPath: IndexPath) {
         if let myID = model.results?[indexPath.row].id {
             NetworkApi.shared.getCharacter(id: myID ) { [weak self] character in
-                let detailedView = DetailViewController(model: character)
+                let detailedView = DetailViewController(viewModel: CharacterDetailViewModel(model: character))
                 self?.navigationController?.showDetailViewController(detailedView,
                                                                      sender: nil)
             }
