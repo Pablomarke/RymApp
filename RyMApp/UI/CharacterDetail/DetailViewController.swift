@@ -88,7 +88,7 @@ private extension DetailViewController {
     }
     
     func syncCharacterModelwithView() {
-        var model = viewModel.getCharacterModel()
+        var model = viewModel.model
         nameLabel.text = model.name
         statusLabel.text = model.status
         genderLabel.text = model.gender
@@ -144,7 +144,7 @@ extension DetailViewController: UITableViewDataSource,
                                 UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int) -> Int {
-        return viewModel.getEpisodesCount()
+        return viewModel.model.episode.count
     }
     
     func tableView(_ tableView: UITableView,

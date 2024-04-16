@@ -9,11 +9,10 @@ import Foundation
 import Combine
 
 final class CharacterDetailViewModel {
-    private var model: Character
+    @Published var model: Character
     private var episodes: Episodes = []
     let episode = PassthroughSubject<Void, Error>()
 
-    
     init(model: Character) {
         self.model = model
     }
@@ -22,18 +21,12 @@ final class CharacterDetailViewModel {
         getEpisodes()
     }
     
-    func getCharacterModel() -> Character {
-        model
-    }
-    
-    func getEpisodesCount() -> Int {
-        model.episode.count
-    }
-    
     func getEpisodeBy(index: Int) -> Episode {
         episodes[index]
     }
-    
+}
+
+private extension CharacterDetailViewModel {
     func getEpisodes() {
         for i in model.episode {
             NetworkApi.shared.getEpisode(url: i) { episode in
