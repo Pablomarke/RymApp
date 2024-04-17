@@ -98,7 +98,7 @@ extension EpisodeDetailViewController: UICollectionViewDataSource,
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
         NetworkApi.shared.getCharacterUrl(url: model.characters[indexPath.row]) { character in
-            let detailedView = DetailViewController(model: character)
+            let detailedView = DetailViewController(viewModel: CharacterDetailViewModel(model: character))
             self.navigationController?.showDetailViewController(detailedView,
                                                                 sender: nil)
         }

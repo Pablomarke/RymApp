@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 final class DetailViewController: BaseViewController {
     
@@ -39,11 +40,12 @@ final class DetailViewController: BaseViewController {
     @IBOutlet weak var tOriginLabel: UILabel!
     
     // MARK: - Properties -
-    var model: Character
+    var viewModel: CharacterDetailViewModel
+    var cancellables = Set<AnyCancellable>()
     
     // MARK: - Init -
-    init(model: Character) {
-        self.model = model
+    init(viewModel: CharacterDetailViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil,
                    bundle: nil)
     }
@@ -55,15 +57,26 @@ final class DetailViewController: BaseViewController {
     // MARK: - Lifecycle -
     override func viewDidLoad() {
         super.viewDidLoad()
-        syncCharacterModelwithView()
-        createTableAndStyle()
-        createViewsforData()
-        viewStyle()
+        viewModel.initViewAndChargeData()
+        responseViewModel()
     }
 }
 
 private extension DetailViewController {
-    func viewStyle(){
+    func responseViewModel() {
+        viewModel.episode.sink { error in
+            print(error)
+        } receiveValue: { [weak self] _ in
+            self?.episodeTable.reloadData()
+            self?.syncCharacterModelwithView()
+            self?.createTableAndStyle()
+            self?.createViewsforData()
+            self?.viewStyle()
+        }.store(in: &cancellables)
+        
+    }
+    
+    func viewStyle() {
         self.view.backgroundColor = Color.mainColor
         backImage.image = LocalImages.detailImage
         backImage.contentMode = .scaleToFill
@@ -75,6 +88,7 @@ private extension DetailViewController {
     }
     
     func syncCharacterModelwithView() {
+        var model = viewModel.model
         nameLabel.text = model.name
         statusLabel.text = model.status
         genderLabel.text = model.gender
@@ -89,7 +103,7 @@ private extension DetailViewController {
         imageDetail.kf.setImage(with: URL(string: imageUrl))
     }
     
-    func createTableAndStyle(){
+    func createTableAndStyle() {
         episodeTable.dataSource = self
         episodeTable.delegate = self
         episodeTable.register(UINib(nibName: TableViewCell.identifier,
@@ -98,7 +112,7 @@ private extension DetailViewController {
         episodeTable.clearBackground()
     }
     
-    func createViewsforData(){
+    func createViewsforData() {
         speciesView.cornerToView()
         tSpeciesView.cornerToView()
         speciesLabel.textColor = Color.mainColor
@@ -125,12 +139,12 @@ private extension DetailViewController {
         tOriginLabel.text = "Origin"
     }
 }
-    // MARK: - Extension de datasource -
+// MARK: - Extension de datasource -
 extension DetailViewController: UITableViewDataSource,
                                 UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int) -> Int {
-        return model.episode.count
+        return viewModel.model.episode.count
     }
     
     func tableView(_ tableView: UITableView,
@@ -139,18 +153,16 @@ extension DetailViewController: UITableViewDataSource,
             return UITableViewCell()
         }
         
-        NetworkApi.shared.getEpisode(url: model.episode[indexPath.row]) { episode in
-            detailCell.syncEpisodeWithCell(model: episode)
-        }
+        let episode = viewModel.getEpisodeBy(index: indexPath.row)
+        detailCell.syncEpisodeWithCell(model: episode)
         return detailCell
     }
-
+    
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
-        NetworkApi.shared.getEpisode(url: model.episode[indexPath.row]) { episode in
-            let episodeNav = EpisodeDetailViewController(episode)
-            self.navigationController?.showDetailViewController(episodeNav,
-                                                                sender: nil)
-        }
+        let episode = viewModel.getEpisodeBy(index: indexPath.row)
+        let episodeNav = EpisodeDetailViewController(episode)
+        self.navigationController?.showDetailViewController(episodeNav,
+                                                            sender: nil)
     }
 }

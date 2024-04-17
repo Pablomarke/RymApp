@@ -12,13 +12,6 @@ final class NetworkApi {
     private let cstatusOk = 200
     private let baseUrl = "https://rickandmortyapi.com/api/"
     
-    enum Endpoint {
-        static let allCharacters = "character/"
-        static let allEpisodes = "episode/"
-        static let name = "character/?name="
-        static let allLocations = "location/"
-    }
-    
     enum HttpMethods {
         static let get = "GET"
     }
