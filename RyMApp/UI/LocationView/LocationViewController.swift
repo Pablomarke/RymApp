@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 final class LocationViewController: BaseViewController {
     //MARK: - IBOutlets -
@@ -19,15 +20,14 @@ final class LocationViewController: BaseViewController {
     @IBOutlet weak var pageLabel: UILabel!
     
     // MARK: - Properties -
-    var model: AllLocations
-    var pageCount = 1
+    private var viewModel: LocationViewModel
+    var cancellables = Set<AnyCancellable>()
+
     
-    // MARK: - Init -
-    init(_ model: AllLocations) {
-        self.model = model
-        super.init(
-            nibName: nil,
-            bundle: nil)
+    init(viewModel: LocationViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil,
+                   bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -37,6 +37,7 @@ final class LocationViewController: BaseViewController {
     // MARK: - Lifecycle -
     override func viewDidLoad() {
         super.viewDidLoad()
+        responseViewModel()
         locationTableStyle()
         navigationBarStyle()
         viewStyle()
@@ -46,15 +47,25 @@ final class LocationViewController: BaseViewController {
 
     // MARK: - Buttons -
     @IBAction func nextBAct(_ sender: Any) {
-        nextPage()
+        viewModel.nextPage()
     }
     
     @IBAction func backBAct(_ sender: Any) {
-        prevPage()
+        viewModel.prevPage()
     }
 }
 
 private extension LocationViewController {
+    func responseViewModel() {
+        viewModel.otherPage.sink { error in
+            print(error)
+        } receiveValue: { [weak self] _ in
+            self?.pageLabel.text = "\(self?.viewModel.pageCount) / \(self?.viewModel.model.info.pages )"
+            self?.locationTable.reloadData()
+        }.store(in: &cancellables)
+    }
+    
+    
     func viewStyle() {
         self.view.backgroundColor = Color.mainColor
         backImage.image = LocalImages.locationEpisodeImage
@@ -62,10 +73,10 @@ private extension LocationViewController {
     
     func pagesViewStyle() {
         pagesView.backgroundColor = .clear
-        pageLabel.text = "\(pageCount) / \(model.info.pages)"
+        pageLabel.text = "\(viewModel.pageCount) / \(viewModel.model.info.pages)"
         pageLabel.textColor = Color.secondColor
         pageLabel.font = Font.size24
-        if model.info.prev == nil {
+        if viewModel.model.info.prev == nil {
             backButton.isHidden = true
         }
     }
@@ -86,32 +97,7 @@ private extension LocationViewController {
         locationTable.backgroundColor = .clear
     }
     
-    func nextPage() {
-        NetworkApi.shared.pagesLocation(url: (model.info.next)! ) { [weak self] AllLocations in
-            self?.model = AllLocations
-            self?.locationTable.reloadData()
-            self?.pageCount += 1
-            self?.pageLabel.text = "\(self?.pageCount) / \(self?.model.info.pages )"
-            self?.backButton.isHidden = false
-            if self?.model.info.next == nil {
-                self?.nextButton.isHidden = true
-            }
-        }
-    }
     
-    func prevPage() {
-        NetworkApi.shared.pagesLocation(url: (model.info.prev)!) { [weak self] AllLocations in
-            self?.model = AllLocations
-            self?.locationTable.reloadData()
-            self?.pageCount -= 1
-            self?.pageLabel.text = "\(self?.pageCount) / \(self?.model.info.pages)"
-            self?.nextButton.isHidden = false
-            if self?.model.info.prev == nil {
-                
-                self?.backButton.isHidden = true
-            }
-        }
-    }
 }
 
     // MARK: - Extension datasource -
@@ -119,7 +105,7 @@ extension LocationViewController: UITableViewDataSource,
                                   UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int) -> Int {
-        return model.results.count
+        return viewModel.model.results.count
     }
     
     func tableView(_ tableView: UITableView,
@@ -128,13 +114,13 @@ extension LocationViewController: UITableViewDataSource,
             return UITableViewCell()
         }
         
-        cell.syncLocationWithCell(model: model.results[indexPath.row])
+        cell.syncLocationWithCell(model: viewModel.model.results[indexPath.row])
         return cell
     }
 
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
-        NetworkApi.shared.getLocationUrl(url: (model.results[indexPath.row].url)) { [weak self] locations in
+        NetworkApi.shared.getLocationUrl(url: (viewModel.model.results[indexPath.row].url)) { [weak self] locations in
          let detail = LocationDetailViewController(locations)
          self?.navigationController?.show(detail,
                                           sender: nil)

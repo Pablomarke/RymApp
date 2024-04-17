@@ -46,7 +46,7 @@ final class TabBarManager {
                 }
             case .locations:
                 NetworkApi.shared.getAllLocations() { locations in
-                    let myView = LocationViewController(locations)
+                    let myView = LocationViewController(viewModel: LocationViewModel(model: locations))
                     navigationController.setViewControllers([myView], 
                                                             animated: true)
                 }
