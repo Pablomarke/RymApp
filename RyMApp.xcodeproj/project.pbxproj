@@ -54,6 +54,10 @@
 		39DA13112A83AB4C009073E0 /* TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 39DA130F2A83AB4C009073E0 /* TableViewCell.xib */; };
 		39DA13132A83E45D009073E0 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39DA13122A83E45D009073E0 /* Location.swift */; };
 		39DA13152A83EB34009073E0 /* Episode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39DA13142A83EB34009073E0 /* Episode.swift */; };
+		39FC39B92BD025BA00839D7D /* LocationDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FC39B82BD025BA00839D7D /* LocationDetailViewModel.swift */; };
+		39FC39BB2BD025CA00839D7D /* EpisodesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FC39BA2BD025CA00839D7D /* EpisodesViewModel.swift */; };
+		39FC39BD2BD025E400839D7D /* EpisodeDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FC39BC2BD025E400839D7D /* EpisodeDetailViewModel.swift */; };
+		39FC39BF2BD0265700839D7D /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FC39BE2BD0265700839D7D /* Endpoint.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -124,6 +128,10 @@
 		39DA130F2A83AB4C009073E0 /* TableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TableViewCell.xib; sourceTree = "<group>"; };
 		39DA13122A83E45D009073E0 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		39DA13142A83EB34009073E0 /* Episode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Episode.swift; sourceTree = "<group>"; };
+		39FC39B82BD025BA00839D7D /* LocationDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDetailViewModel.swift; sourceTree = "<group>"; };
+		39FC39BA2BD025CA00839D7D /* EpisodesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodesViewModel.swift; sourceTree = "<group>"; };
+		39FC39BC2BD025E400839D7D /* EpisodeDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeDetailViewModel.swift; sourceTree = "<group>"; };
+		39FC39BE2BD0265700839D7D /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -273,6 +281,7 @@
 			children = (
 				3905095E2A86A801003CC30A /* EpisodesViewController.xib */,
 				3905095D2A86A801003CC30A /* EpisodesViewController.swift */,
+				39FC39BA2BD025CA00839D7D /* EpisodesViewModel.swift */,
 			);
 			path = EpisodesView;
 			sourceTree = "<group>";
@@ -291,6 +300,7 @@
 			children = (
 				395A85352A879FC900C59BCE /* EpisodeDetailViewController.xib */,
 				395A85342A879FC900C59BCE /* EpisodeDetailViewController.swift */,
+				39FC39BC2BD025E400839D7D /* EpisodeDetailViewModel.swift */,
 			);
 			path = EpisodeDetailView;
 			sourceTree = "<group>";
@@ -310,6 +320,7 @@
 			children = (
 				3975A6AA2A8B872D007BDBC6 /* LocationDetailViewController.xib */,
 				3975A6A92A8B872D007BDBC6 /* LocationDetailViewController.swift */,
+				39FC39B82BD025BA00839D7D /* LocationDetailViewModel.swift */,
 			);
 			path = LocationDetail;
 			sourceTree = "<group>";
@@ -337,6 +348,7 @@
 				39DA13142A83EB34009073E0 /* Episode.swift */,
 				390D94C22A861E2C0091336F /* AllLocations.swift */,
 				39DA13122A83E45D009073E0 /* Location.swift */,
+				39FC39BE2BD0265700839D7D /* Endpoint.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -566,6 +578,7 @@
 				399BE5302BB864EC00AC323C /* CharactersViewModel.swift in Sources */,
 				39D05DCA2A727F9D00468A9E /* Character.swift in Sources */,
 				39D05D962A727E0300468A9E /* AppDelegate.swift in Sources */,
+				39FC39BD2BD025E400839D7D /* EpisodeDetailViewModel.swift in Sources */,
 				39DA13132A83E45D009073E0 /* Location.swift in Sources */,
 				390D94C12A861DFB0091336F /* ApiInfo.swift in Sources */,
 				39D7F65D2BCF03420027E39A /* LocationViewModel.swift in Sources */,
@@ -580,10 +593,13 @@
 				39D05DD22A72847E00468A9E /* DetailViewController.swift in Sources */,
 				39D645E02A895BD800F39F84 /* LocationViewController.swift in Sources */,
 				397666062B1F505D009457C6 /* UICollectionViewExtension.swift in Sources */,
+				39FC39B92BD025BA00839D7D /* LocationDetailViewModel.swift in Sources */,
+				39FC39BB2BD025CA00839D7D /* EpisodesViewModel.swift in Sources */,
 				3975A6AB2A8B872D007BDBC6 /* LocationDetailViewController.swift in Sources */,
 				39DA13102A83AB4C009073E0 /* TableViewCell.swift in Sources */,
 				39D05DCC2A72801A00468A9E /* Network.swift in Sources */,
 				390D94C52A861E530091336F /* AllEpisodes.swift in Sources */,
+				39FC39BF2BD0265700839D7D /* Endpoint.swift in Sources */,
 				39D05DC72A727E4600468A9E /* HomeViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
