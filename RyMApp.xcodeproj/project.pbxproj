@@ -58,6 +58,7 @@
 		39FC39BB2BD025CA00839D7D /* EpisodesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FC39BA2BD025CA00839D7D /* EpisodesViewModel.swift */; };
 		39FC39BD2BD025E400839D7D /* EpisodeDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FC39BC2BD025E400839D7D /* EpisodeDetailViewModel.swift */; };
 		39FC39BF2BD0265700839D7D /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FC39BE2BD0265700839D7D /* Endpoint.swift */; };
+		39FC39C12BD026EA00839D7D /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FC39C02BD026EA00839D7D /* SearchViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -132,6 +133,7 @@
 		39FC39BA2BD025CA00839D7D /* EpisodesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodesViewModel.swift; sourceTree = "<group>"; };
 		39FC39BC2BD025E400839D7D /* EpisodeDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeDetailViewModel.swift; sourceTree = "<group>"; };
 		39FC39BE2BD0265700839D7D /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
+		39FC39C02BD026EA00839D7D /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -291,6 +293,7 @@
 			children = (
 				39C7F2AE2A8249FA00376FBC /* SearchViewController.xib */,
 				39C7F2AD2A8249FA00376FBC /* SearchViewController.swift */,
+				39FC39C02BD026EA00839D7D /* SearchViewModel.swift */,
 			);
 			path = SearchView;
 			sourceTree = "<group>";
@@ -568,6 +571,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				39AE69C32A73E53C00E3D09A /* CharactersViewController.swift in Sources */,
+				39FC39C12BD026EA00839D7D /* SearchViewModel.swift in Sources */,
 				39C7F2AF2A8249FA00376FBC /* SearchViewController.swift in Sources */,
 				393525D62B1E944C005848B4 /* UIViewExtension.swift in Sources */,
 				397666042B1F4F9B009457C6 /* UITableViewExtension.swift in Sources */,

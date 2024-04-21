@@ -8,15 +8,11 @@
 import Foundation
 
 struct AllCharacters: Codable {
-    let results: [Character]?
+    let results: Characters
     let info: ApiInfo?
     
     enum CodingKeys: CodingKey {
         case info
         case results
-        
     }
 }
-
-
-

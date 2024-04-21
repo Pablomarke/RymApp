@@ -21,8 +21,6 @@ final class HomeViewController: UIViewController {
         buttonStyle()
     }
     
-    // MARK: - Methods -
-   
     
     // MARK: - Buttons -
     @IBAction func homeBAction(_ sender: Any) {
@@ -46,10 +44,8 @@ private extension HomeViewController {
     }
     
     func navigateToCharacters() {
-        NetworkApi.shared.getAllCharacters { [weak self] allCharacters in
-            let viewController = CharactersViewController(viewModel: CharactersViewModel(allCharacters))
-            self?.navigationController?.setViewControllers([viewController],
+            let viewController = CharactersViewController(viewModel: CharactersViewModel())
+            self.navigationController?.setViewControllers([viewController],
                                                           animated: true)
-        }
     }
 }

@@ -10,7 +10,8 @@ import Combine
 
 final class CharactersViewModel {
     // MARK: - Properties -
-    @Published var model: AllCharacters
+    @Published var model: AllCharacters?
+    @Published var characters: Characters = []
     var countPage = 1
     var cancellables = Set<AnyCancellable>()
     let nextPage = PassthroughSubject<Void, Error>()
@@ -18,13 +19,18 @@ final class CharactersViewModel {
     let detailPage = PassthroughSubject<Character, Error>()
 
     
-    // MARK: - Init -
-    init(_ model: AllCharacters) {
-        self.model = model
+    // MARK: - Public methods -
+    func initData() {
+        NetworkApi.shared.getAllCharacters { [weak self] allCharacters in
+            self?.characters = allCharacters.results
+            self?.model = allCharacters
+            self?.nextPage.send()
+        }
     }
     
     func nextPageDataByAPI() {
-        NetworkApi.shared.pages(url: (model.info?.next ?? "")) { [weak self] allCharacters in
+        NetworkApi.shared.pages(url: (model?.info?.next ?? "")) { [weak self] allCharacters in
+            self?.characters = allCharacters.results
             self?.model = allCharacters
             self?.countPage += 1
             self?.nextPage.send()
@@ -32,7 +38,8 @@ final class CharactersViewModel {
     }
     
     func prevPageDagaByAPI() {
-        NetworkApi.shared.pages(url: (model.info?.prev ?? "")) { [weak self] allCharacters in
+        NetworkApi.shared.pages(url: (model?.info?.prev ?? "")) { [weak self] allCharacters in
+            self?.characters = allCharacters.results
             self?.model = allCharacters
             self?.countPage -= 1
             self?.prevPage.send()
@@ -40,7 +47,7 @@ final class CharactersViewModel {
     }
     
     func get(index: Int) {
-        NetworkApi.shared.getCharacter(id: model.results?[index].id ?? 1) { [weak self] character in
+        NetworkApi.shared.getCharacter(id: model?.results[index].id ?? 1) { [weak self] character in
             self?.detailPage.send(character)
         }
     }

@@ -17,13 +17,13 @@ final class CharactersViewController: BaseViewController {
     @IBOutlet weak var pagesLabel: UILabel!
     @IBOutlet weak var nextButton: UIButton!
     @IBOutlet weak var backButton: UIButton!
-
+    
     var viewModel: CharactersViewModel
     var cancellables = Set<AnyCancellable>()
-
+    
     init(viewModel: CharactersViewModel) {
         self.viewModel = viewModel
-        super.init(nibName: nil, 
+        super.init(nibName: nil,
                    bundle: nil)
     }
     
@@ -38,11 +38,12 @@ final class CharactersViewController: BaseViewController {
         collectionStyle()
         pagesStyle()
         createTabBar(tabBar: characterBar)
+        viewModel.initData()
         responseViewModel()
     }
     
     // MARK: - methods -
-   
+    
     
     // MARK: - Buttons -
     @IBAction func nextButtonAction(_ sender: Any) {
@@ -106,27 +107,27 @@ private extension CharactersViewController {
     
     func pagesStyle() {
         pageView.backgroundColor = .clear
-        pagesLabel.text = "\(viewModel.countPage) / \(viewModel.model.info?.pages  ?? 1)"
+        pagesLabel.text = "\(viewModel.countPage) / \(viewModel.model?.info?.pages  ?? 1)"
         pagesLabel.textColor = Color.secondColor
         pagesLabel.font = Font.size24
         
-        if viewModel.model.info?.prev == nil || viewModel.model.info?.next == nil {
+        if viewModel.model?.info?.prev == nil  {
             backButton.isHidden = true
         }
     }
-   
+    
     func showBackButton() {
-        self.pagesLabel.text = "\(viewModel.countPage) / \(viewModel.model.info?.pages ?? 1)"
+        self.pagesLabel.text = "\(viewModel.countPage) / \(viewModel.model?.info?.pages ?? 1)"
         self.backButton.isHidden = false
-        if viewModel.model.info?.next == nil {
+        if viewModel.model?.info?.next == nil {
             self.nextButton.isHidden = true
         }
     }
     
     func showPrevButton() {
-        self.pagesLabel.text = "\(viewModel.countPage) / \(viewModel.model.info?.pages ?? 1)"
+        self.pagesLabel.text = "\(viewModel.countPage) / \(viewModel.model?.info?.pages ?? 1)"
         self.nextButton.isHidden = false
-        if viewModel.model.info?.prev == nil {
+        if viewModel.model?.info?.prev == nil {
             self.backButton.isHidden = true
         }
     }
@@ -134,16 +135,16 @@ private extension CharactersViewController {
     func navigateToDetail(character: Character) {
         let detailedView = DetailViewController(viewModel: CharacterDetailViewModel(model: character))
         self.navigationController?.show(detailedView,
-                                         sender: nil)
+                                        sender: nil)
     }
 }
 
-    // MARK: - Extension de datasource -
+// MARK: - Extension de datasource -
 extension CharactersViewController: UICollectionViewDataSource,
                                     UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        return viewModel.model.results?.count ?? 0
+        return viewModel.characters.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -153,9 +154,8 @@ extension CharactersViewController: UICollectionViewDataSource,
             return UICollectionViewCell()
         }
         
-        if let cellModel = viewModel.model.results?[indexPath.row] {
-            cell.syncCellWithModel(model: cellModel)
-        } 
+        let cellModel = viewModel.characters[indexPath.row]
+        cell.syncCellWithModel(model: cellModel)
         return cell
     }
     
