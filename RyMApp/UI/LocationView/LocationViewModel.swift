@@ -28,10 +28,6 @@ final class LocationViewModel {
             self?.model = allLocations.results
             self?.locations = allLocations
             self?.pageCount += 1
-           /* self?.backButton.isHidden = false
-            if self?.model.info.next == nil {
-                self?.nextButton.isHidden = true
-            }*/
             self?.otherPage.send()
         }
     }
@@ -41,10 +37,6 @@ final class LocationViewModel {
             self?.model = allLocations.results
             self?.locations = allLocations
             self?.pageCount -= 1
-            /*self?.nextButton.isHidden = false
-            if self?.model.info.prev == nil {
-                self?.backButton.isHidden = true
-            }*/
             self?.otherPage.send()
         }
     }

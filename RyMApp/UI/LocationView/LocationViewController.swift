@@ -63,6 +63,7 @@ private extension LocationViewController {
         } receiveValue: { [weak self] _ in
             self?.pageLabel.text = "\(self?.viewModel.pageCount) / \(self?.viewModel.locations?.info.pages )"
             self?.locationTable.reloadData()
+            self?.buttonsViews()
         }.store(in: &cancellables)
     }
     
@@ -97,7 +98,16 @@ private extension LocationViewController {
         locationTable.backgroundColor = .clear
     }
     
-    
+    func buttonsViews() {
+        self.nextButton.isHidden = false
+        self.backButton.isHidden = false
+        if viewModel.locations?.info.next == nil {
+            self.nextButton.isHidden = true
+        }
+        if viewModel.locations?.info.prev == nil {
+            self.backButton.isHidden = true
+        }
+    }
 }
 
     // MARK: - Extension datasource -
