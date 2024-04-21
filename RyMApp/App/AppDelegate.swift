@@ -16,7 +16,8 @@ var window: UIWindow?
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         window = UIWindow(frame: UIScreen.main.bounds)
-        let home = HomeViewController()
+        let viewModel = CharactersViewModel()
+        let home = CharactersViewController(viewModel: viewModel)
         let nav = UINavigationController(rootViewController: home)
         window?.rootViewController = nav
         window?.makeKeyAndVisible()

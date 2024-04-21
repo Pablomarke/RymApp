@@ -18,6 +18,7 @@ final class TabBarManager {
         tabBar.barTintColor = Color.mainColor
         tabBar.isTranslucent = false
     }
+    
     enum TabBarItemTitle: String {
         case characters = "Characters"
         case episodes = "Episodes"
