@@ -36,4 +36,3 @@ struct SimpleLocation: Codable {
         case url
     }
 }
-

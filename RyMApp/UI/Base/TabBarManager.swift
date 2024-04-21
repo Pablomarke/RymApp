@@ -49,11 +49,9 @@ final class TabBarManager {
                                                             animated: true)
                 }
             case .search:
-                NetworkApi.shared.getAllCharacters { allCharacters in
-                    let myView = SearchViewController(allCharacters)
+                    let myView = SearchViewController()
                     navigationController.setViewControllers([myView],
                                                             animated: true)
-                }
         }
     }
 }
