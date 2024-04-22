@@ -38,17 +38,13 @@ final class TabBarManager {
                     navigationController.setViewControllers([myView],
                                                             animated: true)
             case .episodes:
-                NetworkApi.shared.getArrayEpisodes(season: "1,2,3,4,5,6,7,8,9,10,11") { episodes in
-                    let myView = EpisodesViewController(episodes)
+                    let myView = EpisodesViewController()
                     navigationController.setViewControllers([myView], 
                                                             animated: true)
-                }
             case .locations:
-                NetworkApi.shared.getAllLocations() { locations in
                     let myView = LocationViewController(viewModel: LocationViewModel())
                     navigationController.setViewControllers([myView], 
                                                             animated: true)
-                }
             case .search:
                     let myView = SearchViewController()
                     navigationController.setViewControllers([myView],
