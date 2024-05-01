@@ -8,7 +8,6 @@
 import UIKit
 
 extension UIView {
-    
     func cornerToTableView(corner: Int = 12){
         self.layer.cornerRadius = CGFloat(corner)
         self.backgroundColor = Color.secondColor

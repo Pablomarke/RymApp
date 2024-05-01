@@ -21,20 +21,6 @@ struct Character: Codable {
     let location: SimpleLocation
     let origin: SimpleLocation
     let episode: [String]
-    
-    enum CodingKeys: String, CodingKey {
-        case id
-        case name
-        case status
-        case created
-        case image
-        case species
-        case gender
-        case type
-        case location
-        case origin
-        case episode
-    }
 }
 
 extension Character {

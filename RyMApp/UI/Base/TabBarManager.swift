@@ -38,7 +38,7 @@ final class TabBarManager {
                     navigationController.setViewControllers([myView],
                                                             animated: true)
             case .episodes:
-                    let myView = EpisodesViewController()
+                let myView = EpisodesViewController(viewModel: EpisodesViewModel())
                     navigationController.setViewControllers([myView], 
                                                             animated: true)
             case .locations:

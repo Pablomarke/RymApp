@@ -18,6 +18,7 @@ final class CharactersViewController: BaseViewController {
     @IBOutlet weak var nextButton: UIButton!
     @IBOutlet weak var backButton: UIButton!
     
+    //MARK: - Properties -
     var viewModel: CharactersViewModel
     var cancellables = Set<AnyCancellable>()
     
@@ -41,9 +42,6 @@ final class CharactersViewController: BaseViewController {
         viewModel.initData()
         responseViewModel()
     }
-    
-    // MARK: - methods -
-    
     
     // MARK: - Buttons -
     @IBAction func nextButtonAction(_ sender: Any) {

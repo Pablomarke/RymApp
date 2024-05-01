@@ -12,11 +12,4 @@ struct ApiInfo: Codable {
     let pages: Int
     let next: String?
     let prev: String?
-    
-    enum CodingKeys: CodingKey {
-        case count
-        case pages
-        case next
-        case prev
-    }
 }
