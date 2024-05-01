@@ -15,12 +15,4 @@ struct Episode: Codable {
     let characters: [String]
     let url: String
     let air_date: String
-    
-    enum CodingKeys: CodingKey {
-        case name
-        case episode
-        case characters
-        case url
-        case air_date
-    }
 }

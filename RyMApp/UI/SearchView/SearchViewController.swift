@@ -16,19 +16,8 @@ final class SearchViewController: BaseViewController {
     @IBOutlet weak var backImage: UIImageView!
     @IBOutlet weak var buttonView: UIView!
     
-    // MARK: - Propiedades -
-    var model: AllCharacters
-    
-    // MARK: - Init -
-    init(_ model: AllCharacters) {
-        self.model = model
-        super.init(nibName: nil,
-                   bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    // MARK: - Properties -
+    var model: Characters = []
     
     // MARK: - Lifecycle -
     override func viewDidLoad() {
@@ -72,8 +61,6 @@ private extension SearchViewController {
         searchButton.tintColor = .black
     }
     
-    
-    
     func createSearchCollection() {
         searchCollection.clearBackground()
         searchCollection.dataSource = self
@@ -89,8 +76,8 @@ private extension SearchViewController {
         if newName == "" {
             searchText.placeholder = "Please, enter a name"
         } else {
-            NetworkApi.shared.searchCharacters(name: newName!) { allCharacters in
-                self.model = allCharacters
+            NetworkApi.shared.searchCharacters(name: newName!) { characters in
+                self.model = characters.results
                 self.searchText.backgroundColor = Color.secondColor
                 self.searchCollection.isHidden = false
                 self.searchCollection.reloadData()
@@ -104,7 +91,7 @@ extension SearchViewController: UICollectionViewDataSource,
                                 UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        return model.results?.count ?? 0
+        return model.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -114,24 +101,18 @@ extension SearchViewController: UICollectionViewDataSource,
             return UICollectionViewCell()
         }
         
-        if let modelForCell = model.results?[indexPath.row] {
-            cell.syncCellWithModel(model: modelForCell)
-        }
-        
+        let modelForCell = model[indexPath.row]
+        cell.syncCellWithModel(model: modelForCell)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
-        if let myID = model.results?[indexPath.row].id {
-            NetworkApi.shared.getCharacter(id: myID ) { [weak self] character in
-                let detailedView = DetailViewController(viewModel: CharacterDetailViewModel(model: character))
-                self?.navigationController?.showDetailViewController(detailedView,
-                                                                     sender: nil)
-            }
+        let myID = model[indexPath.row].id
+        NetworkApi.shared.getCharacter(id: myID ) { [weak self] character in
+            let detailedView = DetailViewController(viewModel: CharacterDetailViewModel(model: character))
+            self?.navigationController?.showDetailViewController(detailedView,
+                                                                 sender: nil)
         }
     }
 }
-
-
-

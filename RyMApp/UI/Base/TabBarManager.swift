@@ -18,6 +18,7 @@ final class TabBarManager {
         tabBar.barTintColor = Color.mainColor
         tabBar.isTranslucent = false
     }
+    
     enum TabBarItemTitle: String {
         case characters = "Characters"
         case episodes = "Episodes"
@@ -33,29 +34,21 @@ final class TabBarManager {
         
         switch title {
             case .characters:
-                NetworkApi.shared.getAllCharacters { allCharacters in
-                    let myView = CharactersViewController(viewModel: CharactersViewModel(allCharacters))
+                    let myView = CharactersViewController(viewModel: CharactersViewModel())
                     navigationController.setViewControllers([myView],
                                                             animated: true)
-                }
             case .episodes:
-                NetworkApi.shared.getArrayEpisodes(season: "1,2,3,4,5,6,7,8,9,10,11") { episodes in
-                    let myView = EpisodesViewController(episodes)
+                let myView = EpisodesViewController(viewModel: EpisodesViewModel())
                     navigationController.setViewControllers([myView], 
                                                             animated: true)
-                }
             case .locations:
-                NetworkApi.shared.getAllLocations() { locations in
-                    let myView = LocationViewController(viewModel: LocationViewModel(model: locations))
+                    let myView = LocationViewController(viewModel: LocationViewModel())
                     navigationController.setViewControllers([myView], 
                                                             animated: true)
-                }
             case .search:
-                NetworkApi.shared.getAllCharacters { allCharacters in
-                    let myView = SearchViewController(allCharacters)
+                    let myView = SearchViewController()
                     navigationController.setViewControllers([myView],
                                                             animated: true)
-                }
         }
     }
 }

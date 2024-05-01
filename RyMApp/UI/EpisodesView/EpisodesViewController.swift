@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 final class EpisodesViewController: BaseViewController {
     //MARK: - IBOutlets -
@@ -16,11 +17,11 @@ final class EpisodesViewController: BaseViewController {
     @IBOutlet weak var seasonMenu: UIMenu!
     
     // MARK: - Properties -
-    var model: Episodes
+    var viewModel: EpisodesViewModel
+    var cancellables = Set<AnyCancellable>()
     
-    // MARK: - Init -
-    init(_ model: Episodes) {
-        self.model = model
+    init(viewModel: EpisodesViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil,
                    bundle: nil)
     }
@@ -37,10 +38,18 @@ final class EpisodesViewController: BaseViewController {
         viewStyle()
         createTabBar(tabBar: tabBarEpisode)
         buttonStyle()
+        viewModel.initDataView()
+        responseViewModel()
     }
 }
 
 private extension EpisodesViewController {
+    func responseViewModel() {
+        viewModel.reloadData.sink { _ in
+            self.episodeTable.reloadData()
+        }.store(in: &cancellables)
+    }
+    
     func viewStyle() {
         backImage.image = LocalImages.locationEpisodeImage
         self.navigationController?.navigationBar.tintColor = Color.secondColor
@@ -50,41 +59,34 @@ private extension EpisodesViewController {
         self.view.backgroundColor = Color.mainColor
     }
     
+    func createSeasons() -> [UIAction] {
+        let item1 = UIAction(title: "Season 1") { [weak self] (action) in
+            self?.viewModel.createItem(season: Seasons.season1)
+        }
+        
+        let item2 = UIAction(title: "Season 2") { [weak self] (action) in
+            self?.viewModel.createItem(season: Seasons.season2)
+        }
+        
+        let item3 = UIAction(title: "Season 3") { [weak self] (action) in
+            self?.viewModel.createItem(season: Seasons.season3)
+        }
+        
+        let item4 = UIAction(title: "Season 4") { [weak self] (action) in
+            self?.viewModel.createItem(season: Seasons.season4)
+        }
+        
+        let item5 = UIAction(title: "Season 5") { [weak self] (action) in
+            self?.viewModel.createItem(season: Seasons.season5)
+        }
+        
+        return [item1, item2, item3, item4, item5]
+    }
+    
     func createMenu() {
-        let item1 = UIAction(title: "Season 1") { (action) in
-            NetworkApi.shared.getArrayEpisodes(season: "1,2,3,4,5,6,7,8,9,10,11") { episodes in
-                self.model = episodes
-                self.episodeTable.reloadData()
-            }
-        }
-        let item2 = UIAction(title: "Season 2") { (action) in
-            NetworkApi.shared.getArrayEpisodes(season: "12,13,14,15,16,17,18,19,20,21") { episodes in
-                self.model = episodes
-                self.episodeTable.reloadData()
-            }
-        }
-        let item3 = UIAction(title: "Season 3") { (action) in
-            
-            NetworkApi.shared.getArrayEpisodes(season: "22,23,24,25,26,27,28,29,30,31") { episodes in
-                self.model = episodes
-                self.episodeTable.reloadData()
-            }
-        }
-        let item4 = UIAction(title: "Season 4") { (action) in
-            NetworkApi.shared.getArrayEpisodes(season: "32,33,34,35,36,37,38,39,40,41") { episodes in
-                self.model = episodes
-                self.episodeTable.reloadData()
-            }
-        }
-        let item5 = UIAction(title: "Season 5") { (action) in
-            NetworkApi.shared.getArrayEpisodes(season: "42,43,44,45,46,47,48,49,50,51") { episodes in
-                self.model = episodes
-                self.episodeTable.reloadData()
-            }
-        }
         let menu = UIMenu(title: "Select Season",
                           options: .displayInline,
-                          children: [item1, item2, item3, item4, item5])
+                          children: createSeasons())
         
         buttonSeason.menu = menu
         buttonSeason.showsMenuAsPrimaryAction = true
@@ -104,12 +106,12 @@ private extension EpisodesViewController {
     }
 }
 
-    // MARK: - Extension Data Source -
+// MARK: - Extension Data Source -
 extension EpisodesViewController: UITableViewDataSource,
                                   UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int) -> Int {
-        return model.count
+        return viewModel.model.count
     }
     
     func tableView(_ tableView: UITableView,
@@ -118,13 +120,13 @@ extension EpisodesViewController: UITableViewDataSource,
             return UITableViewCell()
         }
         
-        cell.syncEpisodeWithCell(model: model[indexPath.row])
+        cell.syncEpisodeWithCell(model: viewModel.model[indexPath.row])
         return cell
     }
-
+    
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
-        NetworkApi.shared.getEpisode(url: (model[indexPath.row].url)) { [weak self] episode in
+        NetworkApi.shared.getEpisode(url: (viewModel.model[indexPath.row].url)) { [weak self] episode in
             let detail = EpisodeDetailViewController(episode)
             self?.navigationController?.show(detail,
                                              sender: nil)

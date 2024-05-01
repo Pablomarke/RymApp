@@ -42,7 +42,7 @@ class TableViewCell: UITableViewCell {
 private extension TableViewCell {
     func cellStyle(){
         contentView.backgroundColor = Color.clearColor
-        self.backgroundColor = UIColor.clear
+        self.backgroundColor = .clear
         titleLabel.textColor = .black
         dataLabel.textColor = Color.mainColor
         titleView.cornerToTableView()

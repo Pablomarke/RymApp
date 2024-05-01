@@ -10,9 +10,4 @@ import Foundation
 struct AllLocations: Codable {
     let info: ApiInfo
     let results: Locations
-    
-    enum CodingKeys: CodingKey {
-        case info
-        case results
-    }
 }

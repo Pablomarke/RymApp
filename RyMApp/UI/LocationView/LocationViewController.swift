@@ -37,6 +37,7 @@ final class LocationViewController: BaseViewController {
     // MARK: - Lifecycle -
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewModel.initViewAndData()
         responseViewModel()
         locationTableStyle()
         navigationBarStyle()
@@ -60,11 +61,11 @@ private extension LocationViewController {
         viewModel.otherPage.sink { error in
             print(error)
         } receiveValue: { [weak self] _ in
-            self?.pageLabel.text = "\(self?.viewModel.pageCount) / \(self?.viewModel.model.info.pages )"
+            self?.pageLabel.text = "\(self?.viewModel.pageCount) / \(self?.viewModel.locations?.info.pages )"
             self?.locationTable.reloadData()
+            self?.buttonsViews()
         }.store(in: &cancellables)
     }
-    
     
     func viewStyle() {
         self.view.backgroundColor = Color.mainColor
@@ -73,10 +74,10 @@ private extension LocationViewController {
     
     func pagesViewStyle() {
         pagesView.backgroundColor = .clear
-        pageLabel.text = "\(viewModel.pageCount) / \(viewModel.model.info.pages)"
+        pageLabel.text = "\(self.viewModel.pageCount) / \(self.viewModel.locations?.info.pages)"
         pageLabel.textColor = Color.secondColor
         pageLabel.font = Font.size24
-        if viewModel.model.info.prev == nil {
+        if viewModel.locations?.info.prev == nil {
             backButton.isHidden = true
         }
     }
@@ -97,7 +98,16 @@ private extension LocationViewController {
         locationTable.backgroundColor = .clear
     }
     
-    
+    func buttonsViews() {
+        self.nextButton.isHidden = false
+        self.backButton.isHidden = false
+        if viewModel.locations?.info.next == nil {
+            self.nextButton.isHidden = true
+        }
+        if viewModel.locations?.info.prev == nil {
+            self.backButton.isHidden = true
+        }
+    }
 }
 
     // MARK: - Extension datasource -
@@ -105,7 +115,7 @@ extension LocationViewController: UITableViewDataSource,
                                   UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int) -> Int {
-        return viewModel.model.results.count
+        return viewModel.model.count
     }
     
     func tableView(_ tableView: UITableView,
@@ -114,13 +124,13 @@ extension LocationViewController: UITableViewDataSource,
             return UITableViewCell()
         }
         
-        cell.syncLocationWithCell(model: viewModel.model.results[indexPath.row])
+        cell.syncLocationWithCell(model: viewModel.model[indexPath.row])
         return cell
     }
 
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
-        NetworkApi.shared.getLocationUrl(url: (viewModel.model.results[indexPath.row].url)) { [weak self] locations in
+        NetworkApi.shared.getLocationUrl(url: (viewModel.model[indexPath.row].url)) { [weak self] locations in
          let detail = LocationDetailViewController(locations)
          self?.navigationController?.show(detail,
                                           sender: nil)

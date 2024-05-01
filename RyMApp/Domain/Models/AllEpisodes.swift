@@ -10,9 +10,4 @@ import Foundation
 struct AllEpisodes: Codable {
     let info: ApiInfo
     let results: Episodes?
-    
-    enum CodingKeys: CodingKey {
-        case info
-        case results
-    }
 }
