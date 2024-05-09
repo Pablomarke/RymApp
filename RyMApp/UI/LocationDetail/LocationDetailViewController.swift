@@ -18,11 +18,11 @@ final class LocationDetailViewController: UIViewController {
     @IBOutlet weak var residentsCollection: UICollectionView!
     
     // MARK: - Properties -
-    var model: Location
+    var viewModel: LocationDetailViewModel
     
     // MARK: - Init -
-    init(_ model: Location) {
-        self.model = model
+    init(viewModel: LocationDetailViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil,
                    bundle: nil)
     }
@@ -57,10 +57,10 @@ private extension LocationDetailViewController {
     }
     
     func syncModelWithView() {
-        nameLabel.text = model.name
-        typeLabel.text = model.type
-        dimensionLabel.text = model.dimension
-        if model.residents.count != 0 {
+        nameLabel.text = viewModel.model.name
+        typeLabel.text = viewModel.model.type
+        dimensionLabel.text = viewModel.model.dimension
+        if viewModel.model.residents.count != 0 {
             residentsLabel.text = "Residents"
         } else {
             residentsLabel.text = "No residents found"
@@ -81,7 +81,7 @@ extension LocationDetailViewController: UICollectionViewDataSource,
                                         UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        return model.residents.count
+        return viewModel.model.residents.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -91,7 +91,7 @@ extension LocationDetailViewController: UICollectionViewDataSource,
             return UICollectionViewCell()
         }
         
-        NetworkApi.shared.getCharacterUrl(url: model.residents[indexPath.row]) { character in
+        NetworkApi.shared.getCharacterUrl(url: viewModel.model.residents[indexPath.row]) { character in
             cell.syncCellWithModel(model: character)
         }
         return cell
@@ -99,7 +99,7 @@ extension LocationDetailViewController: UICollectionViewDataSource,
 
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
-        NetworkApi.shared.getCharacterUrl(url: model.residents[indexPath.row]) { [weak self ]character in
+        NetworkApi.shared.getCharacterUrl(url: viewModel.model.residents[indexPath.row]) { [weak self ]character in
             let detailView = DetailViewController(viewModel: CharacterDetailViewModel(model: character))
             self?.navigationController?.showDetailViewController(detailView,
                                                                 sender: nil)

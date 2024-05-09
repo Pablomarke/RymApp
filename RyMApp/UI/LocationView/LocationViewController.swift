@@ -130,8 +130,9 @@ extension LocationViewController: UITableViewDataSource,
 
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
-        NetworkApi.shared.getLocationUrl(url: (viewModel.model[indexPath.row].url)) { [weak self] locations in
-         let detail = LocationDetailViewController(locations)
+        NetworkApi.shared.getLocationUrl(url: (viewModel.model[indexPath.row].url)) { [weak self] location in
+            let viewModel = LocationDetailViewModel(location)
+            let detail = LocationDetailViewController(viewModel: viewModel)
          self?.navigationController?.show(detail,
                                           sender: nil)
          }
