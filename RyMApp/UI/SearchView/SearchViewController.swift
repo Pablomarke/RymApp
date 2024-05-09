@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 final class SearchViewController: BaseViewController {
     //MARK: - IBOutlets -
@@ -17,11 +18,23 @@ final class SearchViewController: BaseViewController {
     @IBOutlet weak var buttonView: UIView!
     
     // MARK: - Properties -
-    var model: Characters = []
+    var viewModel: SearchViewModel
+    var cancellables = Set<AnyCancellable>()
+    
+    init(viewModel: SearchViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil,
+                   bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - Lifecycle -
     override func viewDidLoad() {
         super.viewDidLoad()
+        responseViewModel()
         viewStyle()
         searchTextStyle()
         createButtonStyle()
@@ -31,9 +44,12 @@ final class SearchViewController: BaseViewController {
     
     // MARK: - Buttons -
     @IBAction func searchAction(_ sender: Any) {
-        searchCharacters()
+        searchText.text == ""
+        ? searchText.placeholder = "Please, enter a name"
+        : viewModel.searchCharacters(name: searchText.text ?? "000000")
     }
 }
+
 
 private extension SearchViewController {
     func viewStyle() {
@@ -71,19 +87,14 @@ private extension SearchViewController {
         searchCollection.isHidden = true
     }
     
-    func searchCharacters() {
-        let newName = searchText.text
-        if newName == "" {
-            searchText.placeholder = "Please, enter a name"
-        } else {
-            NetworkApi.shared.searchCharacters(name: newName!) { characters in
-                self.model = characters.results
-                self.searchText.backgroundColor = Color.secondColor
-                self.searchCollection.isHidden = false
-                self.searchCollection.reloadData()
-            }
-        }
+    func responseViewModel() {
+        viewModel.reloadCharacters.sink { _ in
+            self.searchText.backgroundColor = Color.secondColor
+            self.searchCollection.isHidden = false
+            self.searchCollection.reloadData()
+        }.store(in: &cancellables)
     }
+    
 }
 
 // MARK: - Extension de datasource -
@@ -91,7 +102,7 @@ extension SearchViewController: UICollectionViewDataSource,
                                 UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        return model.count
+        return viewModel.model.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -101,14 +112,14 @@ extension SearchViewController: UICollectionViewDataSource,
             return UICollectionViewCell()
         }
         
-        let modelForCell = model[indexPath.row]
+        let modelForCell = viewModel.model[indexPath.row]
         cell.syncCellWithModel(model: modelForCell)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
-        let myID = model[indexPath.row].id
+        let myID = viewModel.model[indexPath.row].id
         NetworkApi.shared.getCharacter(id: myID ) { [weak self] character in
             let detailedView = DetailViewController(viewModel: CharacterDetailViewModel(model: character))
             self?.navigationController?.showDetailViewController(detailedView,

@@ -46,7 +46,8 @@ final class TabBarManager {
                     navigationController.setViewControllers([myView], 
                                                             animated: true)
             case .search:
-                    let myView = SearchViewController()
+                let viewModel = SearchViewModel()
+                let myView = SearchViewController(viewModel: viewModel)
                     navigationController.setViewControllers([myView],
                                                             animated: true)
         }
