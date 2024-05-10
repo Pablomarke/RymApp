@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class EpisodeDetailViewController: UIViewController {
+final class EpisodeDetailViewController: BaseViewController {
     //MARK: - IBOutlets -
     @IBOutlet weak var backImage: UIImageView!
     @IBOutlet weak var topView: UIView!
@@ -42,14 +42,14 @@ final class EpisodeDetailViewController: UIViewController {
 }
 
 private extension EpisodeDetailViewController {
-    func viewStyle(){
-        self.view.backgroundColor = Color.mainColor
+    func viewStyle() {
+        viewStyle(title: "")
         topView.backgroundColor = Color.secondColor
         topView.layer.cornerRadius = 22
         characterLabel.text = "Characters"
         characterLabel.textColor = Color.secondColor
         backImage.image = LocalImages.episodeDetailImage
-        backImage.contentMode =  .scaleToFill
+        backImage.contentMode = .scaleToFill
         topView.backgroundColor = .clear
         nameLabel.font = Font.size24
         nameLabel.textColor = Color.secondColor
@@ -65,11 +65,7 @@ private extension EpisodeDetailViewController {
     func createCollectionCharacter(){
         collectionCharacters.dataSource = self
         collectionCharacters.delegate = self
-        collectionCharacters.backgroundColor = .clear
-        collectionCharacters.register(UINib(
-            nibName: CharacterCell.identifier,
-            bundle: nil),
-                                      forCellWithReuseIdentifier: CharacterCell.identifier)
+        collectionCharacters.rymCollectionStyle(cellIdentifier: CharacterCell.identifier)
     }
 }
 

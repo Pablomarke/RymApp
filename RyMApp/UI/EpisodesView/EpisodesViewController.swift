@@ -50,12 +50,8 @@ private extension EpisodesViewController {
     }
     
     func viewStyle() {
+        viewStyle(title: "Episodes")
         backImage.image = LocalImages.locationEpisodeImage
-        self.navigationController?.navigationBar.tintColor = Color.secondColor
-        navigationItem.title = "Episodes"
-        let textAttributes = [NSAttributedString.Key.foregroundColor: Color.secondColor]
-        navigationController?.navigationBar.titleTextAttributes = textAttributes as [NSAttributedString.Key : Any]
-        self.view.backgroundColor = Color.mainColor
     }
     
     func createSeasons() -> [UIAction] {
@@ -94,9 +90,7 @@ private extension EpisodesViewController {
     func createEpisodeTable() {
         episodeTable.dataSource = self
         episodeTable.delegate = self
-        episodeTable.register(UINib(nibName: TableViewCell.identifier,
-                                    bundle: nil), forCellReuseIdentifier: TableViewCell.identifier)
-        episodeTable.backgroundColor = .clear
+        episodeTable.createTable(cellIdentifier: TableViewCell.identifier)
     }
     
     func buttonStyle(){
