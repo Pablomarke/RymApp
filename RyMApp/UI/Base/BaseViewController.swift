@@ -26,6 +26,13 @@ class BaseViewController: UIViewController {
         let textAttributes = [NSAttributedString.Key.foregroundColor: Color.secondColor]
         navigationController?.navigationBar.titleTextAttributes = textAttributes as [NSAttributedString.Key : Any]
     }
+    
+    func createViewForData(label: UILabel, view: UIView, view2: UIView, title: String) {
+        view.cornerToView()
+        view2.cornerToView()
+        label.textColor = Color.mainColor
+        label.text = title
+    }
 }
 
 // MARK: - UItabBar -

@@ -109,30 +109,30 @@ private extension DetailViewController {
     }
     
     func createViewsforData() {
-        speciesView.cornerToView()
-        tSpeciesView.cornerToView()
-        speciesLabel.textColor = Color.mainColor
-        tSpeciesLabel.text = "Specie"
+        createViewForData(label: speciesLabel, 
+                          view: speciesView,
+                          view2: tSpeciesView,
+                          title: "Specie")
+       
+        createViewForData(label: typeLabel, 
+                          view: typeView,
+                          view2: tTypeView,
+                          title: "Type")
         
-        typeView.cornerToView()
-        tTypeView.cornerToView()
-        typeLabel.textColor = Color.mainColor
-        tTypeLabel.text = "Type"
+        createViewForData(label: genderLabel, 
+                          view: genderView,
+                          view2: tGendeView,
+                          title: "Gender")
         
-        genderView.cornerToView()
-        tGendeView.cornerToView()
-        genderLabel.textColor = Color.mainColor
-        tGenderLabel.text = "Gender"
+        createViewForData(label: locationNameLabel, 
+                          view: locationView,
+                          view2: tLocationView,
+                          title: "Location")
         
-        locationView.cornerToView()
-        tLocationView.cornerToView()
-        locationNameLabel.textColor = Color.mainColor
-        tLocationLabel.text = "Location"
-        
-        originView.cornerToView()
-        tOriginaView.cornerToView()
-        originLabel.textColor = Color.mainColor
-        tOriginLabel.text = "Origin"
+        createViewForData(label: originLabel, 
+                          view: originView,
+                          view2: tOriginaView,
+                          title: "Origin")
     }
 }
 // MARK: - Extension de datasource -
