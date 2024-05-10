@@ -10,7 +10,7 @@ import Combine
 
 final class CharacterDetailViewModel {
     @Published var model: Character
-    private var episodes: Episodes = []
+    @Published var episodes: Episodes = []
     let episode = PassthroughSubject<Void, Error>()
 
     init(model: Character) {
@@ -19,10 +19,6 @@ final class CharacterDetailViewModel {
     
     func initViewAndChargeData() {
         getEpisodes()
-    }
-    
-    func getEpisodeBy(index: Int) -> Episode {
-        episodes[index]
     }
 }
 

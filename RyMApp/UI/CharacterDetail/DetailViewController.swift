@@ -41,7 +41,6 @@ final class DetailViewController: BaseViewController {
     
     // MARK: - Properties -
     var viewModel: CharacterDetailViewModel
-    var cancellables = Set<AnyCancellable>()
     
     // MARK: - Init -
     init(viewModel: CharacterDetailViewModel) {
@@ -106,37 +105,34 @@ private extension DetailViewController {
     func createTableAndStyle() {
         episodeTable.dataSource = self
         episodeTable.delegate = self
-        episodeTable.register(UINib(nibName: TableViewCell.identifier,
-                                    bundle: nil),
-                              forCellReuseIdentifier: TableViewCell.identifier)
-        episodeTable.clearBackground()
+        episodeTable.createTable(cellIdentifier: TableViewCell.identifier)
     }
     
     func createViewsforData() {
-        speciesView.cornerToView()
-        tSpeciesView.cornerToView()
-        speciesLabel.textColor = Color.mainColor
-        tSpeciesLabel.text = "Specie"
+        createViewForData(label: speciesLabel, 
+                          view: speciesView,
+                          view2: tSpeciesView,
+                          title: "Specie")
+       
+        createViewForData(label: typeLabel, 
+                          view: typeView,
+                          view2: tTypeView,
+                          title: "Type")
         
-        typeView.cornerToView()
-        tTypeView.cornerToView()
-        typeLabel.textColor = Color.mainColor
-        tTypeLabel.text = "Type"
+        createViewForData(label: genderLabel, 
+                          view: genderView,
+                          view2: tGendeView,
+                          title: "Gender")
         
-        genderView.cornerToView()
-        tGendeView.cornerToView()
-        genderLabel.textColor = Color.mainColor
-        tGenderLabel.text = "Gender"
+        createViewForData(label: locationNameLabel, 
+                          view: locationView,
+                          view2: tLocationView,
+                          title: "Location")
         
-        locationView.cornerToView()
-        tLocationView.cornerToView()
-        locationNameLabel.textColor = Color.mainColor
-        tLocationLabel.text = "Location"
-        
-        originView.cornerToView()
-        tOriginaView.cornerToView()
-        originLabel.textColor = Color.mainColor
-        tOriginLabel.text = "Origin"
+        createViewForData(label: originLabel, 
+                          view: originView,
+                          view2: tOriginaView,
+                          title: "Origin")
     }
 }
 // MARK: - Extension de datasource -
@@ -153,14 +149,14 @@ extension DetailViewController: UITableViewDataSource,
             return UITableViewCell()
         }
         
-        let episode = viewModel.getEpisodeBy(index: indexPath.row)
+        let episode = viewModel.episodes[indexPath.row]
         detailCell.syncEpisodeWithCell(model: episode)
         return detailCell
     }
     
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
-        let episode = viewModel.getEpisodeBy(index: indexPath.row)
+        let episode = viewModel.episodes[indexPath.row]
         let episodeNav = EpisodeDetailViewController(episode)
         self.navigationController?.showDetailViewController(episodeNav,
                                                             sender: nil)

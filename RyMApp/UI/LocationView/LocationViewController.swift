@@ -21,8 +21,6 @@ final class LocationViewController: BaseViewController {
     
     // MARK: - Properties -
     private var viewModel: LocationViewModel
-    var cancellables = Set<AnyCancellable>()
-
     
     init(viewModel: LocationViewModel) {
         self.viewModel = viewModel
@@ -40,7 +38,6 @@ final class LocationViewController: BaseViewController {
         viewModel.initViewAndData()
         responseViewModel()
         locationTableStyle()
-        navigationBarStyle()
         viewStyle()
         pagesViewStyle()
         createTabBar(tabBar: locationTabBar)
@@ -68,7 +65,7 @@ private extension LocationViewController {
     }
     
     func viewStyle() {
-        self.view.backgroundColor = Color.mainColor
+        viewStyle(title: "Locations")
         backImage.image = LocalImages.locationEpisodeImage
     }
     
@@ -82,20 +79,10 @@ private extension LocationViewController {
         }
     }
     
-    func navigationBarStyle() {
-        self.navigationController?.navigationBar.tintColor = Color.secondColor
-        navigationItem.title = "Locations"
-        let textAttributes = [NSAttributedString.Key.foregroundColor: Color.secondColor]
-        navigationController?.navigationBar.titleTextAttributes = textAttributes as [NSAttributedString.Key : Any]
-    }
-    
     func locationTableStyle() {
         locationTable.dataSource = self
         locationTable.delegate = self
-        locationTable.register(UINib(nibName: TableViewCell.identifier,
-                                     bundle: nil),
-                               forCellReuseIdentifier: TableViewCell.identifier)
-        locationTable.backgroundColor = .clear
+        locationTable.createTable(cellIdentifier: TableViewCell.identifier)
     }
     
     func buttonsViews() {
@@ -130,8 +117,9 @@ extension LocationViewController: UITableViewDataSource,
 
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
-        NetworkApi.shared.getLocationUrl(url: (viewModel.model[indexPath.row].url)) { [weak self] locations in
-         let detail = LocationDetailViewController(locations)
+        NetworkApi.shared.getLocationUrl(url: (viewModel.model[indexPath.row].url)) { [weak self] location in
+            let viewModel = LocationDetailViewModel(location)
+            let detail = LocationDetailViewController(viewModel: viewModel)
          self?.navigationController?.show(detail,
                                           sender: nil)
          }

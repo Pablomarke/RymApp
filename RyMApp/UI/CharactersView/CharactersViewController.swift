@@ -20,7 +20,6 @@ final class CharactersViewController: BaseViewController {
     
     //MARK: - Properties -
     var viewModel: CharactersViewModel
-    var cancellables = Set<AnyCancellable>()
     
     init(viewModel: CharactersViewModel) {
         self.viewModel = viewModel
@@ -35,7 +34,8 @@ final class CharactersViewController: BaseViewController {
     // MARK: - Lifecycle -
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewStyle()
+        viewStyle(title: "Characters")
+        anotherViewStyle()
         collectionStyle()
         pagesStyle()
         createTabBar(tabBar: characterBar)
@@ -84,23 +84,15 @@ private extension CharactersViewController {
         self.collectionCharacters.reloadData()
     }
     
-    func viewStyle() {
+    func anotherViewStyle() {
         backImage.image = LocalImages.charactersImage
         backImage.contentMode = .scaleToFill
-        self.view.backgroundColor = Color.mainColor
-        self.navigationController?.navigationBar.tintColor = Color.secondColor
-        navigationItem.title = "Characters"
-        let textAttributes = [NSAttributedString.Key.foregroundColor: Color.secondColor]
-        navigationController?.navigationBar.titleTextAttributes = textAttributes as [NSAttributedString.Key : Any]
     }
     
     func collectionStyle() {
-        collectionCharacters.clearBackground()
         collectionCharacters.dataSource = self
         collectionCharacters.delegate = self
-        collectionCharacters.register(UINib( nibName: CharacterCell.identifier,
-                                             bundle: nil),
-                                      forCellWithReuseIdentifier: CharacterCell.identifier)
+        collectionCharacters.rymCollectionStyle(cellIdentifier: CharacterCell.identifier)
     }
     
     func pagesStyle() {

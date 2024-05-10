@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 final class SearchViewController: BaseViewController {
     //MARK: - IBOutlets -
@@ -17,11 +18,22 @@ final class SearchViewController: BaseViewController {
     @IBOutlet weak var buttonView: UIView!
     
     // MARK: - Properties -
-    var model: Characters = []
+    var viewModel: SearchViewModel
+    
+    init(viewModel: SearchViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil,
+                   bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - Lifecycle -
     override func viewDidLoad() {
         super.viewDidLoad()
+        responseViewModel()
         viewStyle()
         searchTextStyle()
         createButtonStyle()
@@ -31,18 +43,16 @@ final class SearchViewController: BaseViewController {
     
     // MARK: - Buttons -
     @IBAction func searchAction(_ sender: Any) {
-        searchCharacters()
+        searchText.text == ""
+        ? searchText.placeholder = "Please, enter a name"
+        : viewModel.searchCharacters(name: searchText.text ?? "000000")
     }
 }
 
+
 private extension SearchViewController {
     func viewStyle() {
-        self.navigationController?.navigationBar.barTintColor = Color.mainColor
-        self.view.backgroundColor = Color.mainColor
-        self.navigationController?.navigationBar.tintColor = Color.secondColor
-        navigationItem.title = "Character finder"
-        let textAttributes = [NSAttributedString.Key.foregroundColor: Color.secondColor]
-        navigationController?.navigationBar.titleTextAttributes = textAttributes as [NSAttributedString.Key : Any]
+        viewStyle(title: "Character finder")
         backImage.image = LocalImages.searchImage
         backImage.contentMode = .scaleAspectFill
     }
@@ -62,27 +72,18 @@ private extension SearchViewController {
     }
     
     func createSearchCollection() {
-        searchCollection.clearBackground()
+        searchCollection.rymCollectionStyle(cellIdentifier: CharacterCell.identifier)
         searchCollection.dataSource = self
         searchCollection.delegate = self
-        searchCollection.register(UINib(nibName: CharacterCell.identifier,
-                                        bundle: nil),
-                                  forCellWithReuseIdentifier: CharacterCell.identifier)
         searchCollection.isHidden = true
     }
     
-    func searchCharacters() {
-        let newName = searchText.text
-        if newName == "" {
-            searchText.placeholder = "Please, enter a name"
-        } else {
-            NetworkApi.shared.searchCharacters(name: newName!) { characters in
-                self.model = characters.results
-                self.searchText.backgroundColor = Color.secondColor
-                self.searchCollection.isHidden = false
-                self.searchCollection.reloadData()
-            }
-        }
+    func responseViewModel() {
+        viewModel.reloadCharacters.sink { _ in
+            self.searchText.backgroundColor = Color.secondColor
+            self.searchCollection.isHidden = false
+            self.searchCollection.reloadData()
+        }.store(in: &cancellables)
     }
 }
 
@@ -91,7 +92,7 @@ extension SearchViewController: UICollectionViewDataSource,
                                 UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        return model.count
+        return viewModel.model.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -101,14 +102,14 @@ extension SearchViewController: UICollectionViewDataSource,
             return UICollectionViewCell()
         }
         
-        let modelForCell = model[indexPath.row]
+        let modelForCell = viewModel.model[indexPath.row]
         cell.syncCellWithModel(model: modelForCell)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
-        let myID = model[indexPath.row].id
+        let myID = viewModel.model[indexPath.row].id
         NetworkApi.shared.getCharacter(id: myID ) { [weak self] character in
             let detailedView = DetailViewController(viewModel: CharacterDetailViewModel(model: character))
             self?.navigationController?.showDetailViewController(detailedView,
