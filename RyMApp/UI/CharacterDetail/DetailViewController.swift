@@ -41,7 +41,6 @@ final class DetailViewController: BaseViewController {
     
     // MARK: - Properties -
     var viewModel: CharacterDetailViewModel
-    var cancellables = Set<AnyCancellable>()
     
     // MARK: - Init -
     init(viewModel: CharacterDetailViewModel) {
@@ -153,14 +152,14 @@ extension DetailViewController: UITableViewDataSource,
             return UITableViewCell()
         }
         
-        let episode = viewModel.getEpisodeBy(index: indexPath.row)
+        let episode = viewModel.episodes[indexPath.row]
         detailCell.syncEpisodeWithCell(model: episode)
         return detailCell
     }
     
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
-        let episode = viewModel.getEpisodeBy(index: indexPath.row)
+        let episode = viewModel.episodes[indexPath.row]
         let episodeNav = EpisodeDetailViewController(episode)
         self.navigationController?.showDetailViewController(episodeNav,
                                                             sender: nil)

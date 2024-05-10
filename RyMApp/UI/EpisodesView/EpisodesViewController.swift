@@ -18,7 +18,6 @@ final class EpisodesViewController: BaseViewController {
     
     // MARK: - Properties -
     var viewModel: EpisodesViewModel
-    var cancellables = Set<AnyCancellable>()
     
     init(viewModel: EpisodesViewModel) {
         self.viewModel = viewModel

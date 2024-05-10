@@ -19,7 +19,6 @@ final class SearchViewController: BaseViewController {
     
     // MARK: - Properties -
     var viewModel: SearchViewModel
-    var cancellables = Set<AnyCancellable>()
     
     init(viewModel: SearchViewModel) {
         self.viewModel = viewModel

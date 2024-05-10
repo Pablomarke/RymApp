@@ -21,8 +21,6 @@ final class LocationViewController: BaseViewController {
     
     // MARK: - Properties -
     private var viewModel: LocationViewModel
-    var cancellables = Set<AnyCancellable>()
-
     
     init(viewModel: LocationViewModel) {
         self.viewModel = viewModel

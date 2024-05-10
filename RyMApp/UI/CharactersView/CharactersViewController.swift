@@ -20,7 +20,7 @@ final class CharactersViewController: BaseViewController {
     
     //MARK: - Properties -
     var viewModel: CharactersViewModel
-    var cancellables = Set<AnyCancellable>()
+    //var cancellables = Set<AnyCancellable>()
     
     init(viewModel: CharactersViewModel) {
         self.viewModel = viewModel

@@ -6,8 +6,12 @@
 //
 
 import UIKit
+import Combine
 
 class BaseViewController: UIViewController {
+    // MARK: - Properties -
+    var cancellables = Set<AnyCancellable>()
+    
     func createTabBar(tabBar: UITabBar) {
         tabBar.delegate = self
         tabBar.tintColor = Color.secondColor
