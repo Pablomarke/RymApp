@@ -18,6 +18,14 @@ class BaseViewController: UIViewController {
         tabBar.barTintColor = Color.mainColor
         tabBar.isTranslucent = false
     }
+    
+    func viewStyle(title: String) {
+        self.view.backgroundColor = Color.mainColor
+        self.navigationController?.navigationBar.tintColor = Color.secondColor
+        navigationItem.title = title
+        let textAttributes = [NSAttributedString.Key.foregroundColor: Color.secondColor]
+        navigationController?.navigationBar.titleTextAttributes = textAttributes as [NSAttributedString.Key : Any]
+    }
 }
 
 // MARK: - UItabBar -

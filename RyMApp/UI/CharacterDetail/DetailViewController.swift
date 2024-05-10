@@ -105,10 +105,7 @@ private extension DetailViewController {
     func createTableAndStyle() {
         episodeTable.dataSource = self
         episodeTable.delegate = self
-        episodeTable.register(UINib(nibName: TableViewCell.identifier,
-                                    bundle: nil),
-                              forCellReuseIdentifier: TableViewCell.identifier)
-        episodeTable.clearBackground()
+        episodeTable.createTable(cellIdentifier: TableViewCell.identifier)
     }
     
     func createViewsforData() {

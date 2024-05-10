@@ -8,8 +8,15 @@
 import UIKit
 
 extension UITableView {
-    func clearBackground(){
+    func clearBackground() {
         self.backgroundColor = Color.clearColor
         self.backgroundView = UIView.init(frame: CGRect.zero)
+    }
+    
+    func createTable(cellIdentifier: String) {
+        self.register(UINib(nibName: cellIdentifier,
+                                    bundle: nil),
+                              forCellReuseIdentifier: cellIdentifier)
+        self.clearBackground()
     }
 }
