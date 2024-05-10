@@ -21,8 +21,8 @@ class BaseViewController: UIViewController {
     
     func viewStyle(title: String) {
         self.view.backgroundColor = Color.mainColor
-        self.navigationController?.navigationBar.tintColor = Color.secondColor
         navigationItem.title = title
+        self.navigationController?.navigationBar.tintColor = Color.secondColor
         let textAttributes = [NSAttributedString.Key.foregroundColor: Color.secondColor]
         navigationController?.navigationBar.titleTextAttributes = textAttributes as [NSAttributedString.Key : Any]
     }
