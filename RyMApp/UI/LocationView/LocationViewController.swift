@@ -38,7 +38,6 @@ final class LocationViewController: BaseViewController {
         viewModel.initViewAndData()
         responseViewModel()
         locationTableStyle()
-        navigationBarStyle()
         viewStyle()
         pagesViewStyle()
         createTabBar(tabBar: locationTabBar)
@@ -66,7 +65,7 @@ private extension LocationViewController {
     }
     
     func viewStyle() {
-        self.view.backgroundColor = Color.mainColor
+        viewStyle(title: "Locations")
         backImage.image = LocalImages.locationEpisodeImage
     }
     
@@ -80,20 +79,10 @@ private extension LocationViewController {
         }
     }
     
-    func navigationBarStyle() {
-        self.navigationController?.navigationBar.tintColor = Color.secondColor
-        navigationItem.title = "Locations"
-        let textAttributes = [NSAttributedString.Key.foregroundColor: Color.secondColor]
-        navigationController?.navigationBar.titleTextAttributes = textAttributes as [NSAttributedString.Key : Any]
-    }
-    
     func locationTableStyle() {
         locationTable.dataSource = self
         locationTable.delegate = self
-        locationTable.register(UINib(nibName: TableViewCell.identifier,
-                                     bundle: nil),
-                               forCellReuseIdentifier: TableViewCell.identifier)
-        locationTable.backgroundColor = .clear
+        locationTable.createTable(cellIdentifier: TableViewCell.identifier)
     }
     
     func buttonsViews() {

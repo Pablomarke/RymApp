@@ -41,7 +41,7 @@ final class LocationDetailViewController: UIViewController {
 }
 
 private extension LocationDetailViewController {
-    func viewStyle(){
+    func viewStyle() {
         self.view.backgroundColor = Color.mainColor
         backImage.image = LocalImages.locationDetailImage
         backImage.contentMode = .scaleToFill
@@ -60,19 +60,16 @@ private extension LocationDetailViewController {
         nameLabel.text = viewModel.model.name
         typeLabel.text = viewModel.model.type
         dimensionLabel.text = viewModel.model.dimension
-        if viewModel.model.residents.count != 0 {
-            residentsLabel.text = "Residents"
-        } else {
-            residentsLabel.text = "No residents found"
-        }
+        residentsLabel.text = viewModel.model.residents.count != 0
+        ? "Residents"
+        : "No residents found"
+        
     }
     
     func createResidentCollection(){
-        residentsCollection.backgroundColor = .clear
+        residentsCollection.rymCollectionStyle(cellIdentifier: CharacterCell.identifier)
         residentsCollection.dataSource = self
         residentsCollection.delegate = self
-        residentsCollection.register(UINib(nibName: CharacterCell.identifier, bundle: nil),
-                                     forCellWithReuseIdentifier: CharacterCell.identifier)
     }
 }
 
@@ -99,7 +96,7 @@ extension LocationDetailViewController: UICollectionViewDataSource,
 
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
-        NetworkApi.shared.getCharacterUrl(url: viewModel.model.residents[indexPath.row]) { [weak self ]character in
+        NetworkApi.shared.getCharacterUrl(url: viewModel.model.residents[indexPath.row]) { [weak self] character in
             let detailView = DetailViewController(viewModel: CharacterDetailViewModel(model: character))
             self?.navigationController?.showDetailViewController(detailView,
                                                                 sender: nil)
