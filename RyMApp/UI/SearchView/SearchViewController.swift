@@ -52,12 +52,7 @@ final class SearchViewController: BaseViewController {
 
 private extension SearchViewController {
     func viewStyle() {
-        self.navigationController?.navigationBar.barTintColor = Color.mainColor
-        self.view.backgroundColor = Color.mainColor
-        self.navigationController?.navigationBar.tintColor = Color.secondColor
-        navigationItem.title = "Character finder"
-        let textAttributes = [NSAttributedString.Key.foregroundColor: Color.secondColor]
-        navigationController?.navigationBar.titleTextAttributes = textAttributes as [NSAttributedString.Key : Any]
+        viewStyle(title: "Character finder")
         backImage.image = LocalImages.searchImage
         backImage.contentMode = .scaleAspectFill
     }
@@ -77,12 +72,9 @@ private extension SearchViewController {
     }
     
     func createSearchCollection() {
-        searchCollection.clearBackground()
+        searchCollection.rymCollectionStyle(cellIdentifier: CharacterCell.identifier)
         searchCollection.dataSource = self
         searchCollection.delegate = self
-        searchCollection.register(UINib(nibName: CharacterCell.identifier,
-                                        bundle: nil),
-                                  forCellWithReuseIdentifier: CharacterCell.identifier)
         searchCollection.isHidden = true
     }
     
@@ -93,7 +85,6 @@ private extension SearchViewController {
             self.searchCollection.reloadData()
         }.store(in: &cancellables)
     }
-    
 }
 
 // MARK: - Extension de datasource -
