@@ -100,15 +100,12 @@ private extension CharactersViewController {
         pagesLabel.text = "\(viewModel.countPage) / \(viewModel.model?.info?.pages  ?? 1)"
         pagesLabel.textColor = Color.secondColor
         pagesLabel.font = Font.size24
-        
-        if viewModel.model?.info?.prev == nil  {
-            backButton.isHidden = true
-        }
+        backButton.isHidden = true
     }
     
     func showBackButton() {
         self.pagesLabel.text = "\(viewModel.countPage) / \(viewModel.model?.info?.pages ?? 1)"
-        self.backButton.isHidden = false
+        self.backButton.isHidden = viewModel.countPage == 1
         if viewModel.model?.info?.next == nil {
             self.nextButton.isHidden = true
         }
@@ -116,7 +113,7 @@ private extension CharactersViewController {
     
     func showPrevButton() {
         self.pagesLabel.text = "\(viewModel.countPage) / \(viewModel.model?.info?.pages ?? 1)"
-        self.nextButton.isHidden = false
+        self.nextButton.isHidden = viewModel.countPage == viewModel.model?.info?.pages
         if viewModel.model?.info?.prev == nil {
             self.backButton.isHidden = true
         }
