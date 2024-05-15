@@ -58,25 +58,25 @@ final class DetailViewController: BaseViewController {
         super.viewDidLoad()
         viewModel.initViewAndChargeData()
         responseViewModel()
+        createTableAndStyle()
+        createViewsforData()
+        viewStyle()
     }
 }
 
 private extension DetailViewController {
     func responseViewModel() {
-        viewModel.episode.sink { error in
-            print(error)
-        } receiveValue: { [weak self] _ in
-            self?.episodeTable.reloadData()
-            self?.syncCharacterModelwithView()
-            self?.createTableAndStyle()
-            self?.createViewsforData()
-            self?.viewStyle()
-        }.store(in: &cancellables)
-        
+        viewModel.episode
+            .sink { error in
+                print(error)
+            } receiveValue: { [weak self] _ in
+                self?.episodeTable.reloadData()
+                self?.syncCharacterModelwithView()
+            }
+            .store(in: &cancellables)
     }
     
     func viewStyle() {
-        self.view.backgroundColor = Color.mainColor
         backImage.image = LocalImages.detailImage
         backImage.contentMode = .scaleToFill
         imageDetail.cornerToImagedetailViews()
@@ -97,9 +97,7 @@ private extension DetailViewController {
         typeLabel.text = model.typeForVoidString()
         colorStatus.backgroundColor = model.statusColor()
         colorCharacter.backgroundColor = model.statusColor()
-        
-        let imageUrl = model.image
-        imageDetail.kf.setImage(with: URL(string: imageUrl))
+        imageDetail.kf.setImage(with: URL(string: model.image))
     }
     
     func createTableAndStyle() {
@@ -109,27 +107,27 @@ private extension DetailViewController {
     }
     
     func createViewsforData() {
-        createViewForData(label: speciesLabel, 
+        createViewForData(label: speciesLabel,
                           view: speciesView,
                           view2: tSpeciesView,
                           title: "Specie")
-       
-        createViewForData(label: typeLabel, 
+        
+        createViewForData(label: typeLabel,
                           view: typeView,
                           view2: tTypeView,
                           title: "Type")
         
-        createViewForData(label: genderLabel, 
+        createViewForData(label: genderLabel,
                           view: genderView,
                           view2: tGendeView,
                           title: "Gender")
         
-        createViewForData(label: locationNameLabel, 
+        createViewForData(label: locationNameLabel,
                           view: locationView,
                           view2: tLocationView,
                           title: "Location")
         
-        createViewForData(label: originLabel, 
+        createViewForData(label: originLabel,
                           view: originView,
                           view2: tOriginaView,
                           title: "Origin")
