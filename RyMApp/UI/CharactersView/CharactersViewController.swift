@@ -75,12 +75,12 @@ private extension CharactersViewController {
     }
     
     func nextPage() {
-        self.showBackButton()
+        self.showButtons()
         self.collectionCharacters.reloadData()
     }
     
     func prevPage() {
-        self.showPrevButton()
+        self.showButtons()
         self.collectionCharacters.reloadData()
     }
     
@@ -100,23 +100,12 @@ private extension CharactersViewController {
         pagesLabel.text = "\(viewModel.countPage) / \(viewModel.model?.info?.pages  ?? 1)"
         pagesLabel.textColor = Color.secondColor
         pagesLabel.font = Font.size24
-        backButton.isHidden = true
     }
     
-    func showBackButton() {
+    func showButtons() {
         self.pagesLabel.text = "\(viewModel.countPage) / \(viewModel.model?.info?.pages ?? 1)"
         self.backButton.isHidden = viewModel.countPage == 1
-        if viewModel.model?.info?.next == nil {
-            self.nextButton.isHidden = true
-        }
-    }
-    
-    func showPrevButton() {
-        self.pagesLabel.text = "\(viewModel.countPage) / \(viewModel.model?.info?.pages ?? 1)"
         self.nextButton.isHidden = viewModel.countPage == viewModel.model?.info?.pages
-        if viewModel.model?.info?.prev == nil {
-            self.backButton.isHidden = true
-        }
     }
     
     func navigateToDetail(character: Character) {
