@@ -35,7 +35,7 @@ final class CharactersViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         viewStyle(title: "Characters")
-        anotherViewStyle()
+        viewStyle()
         collectionStyle()
         pagesStyle()
         createTabBar(tabBar: characterBar)
@@ -55,36 +55,42 @@ final class CharactersViewController: BaseViewController {
 
 private extension CharactersViewController {
     func responseViewModel() {
-        viewModel.nextPage.sink { error in
-            print(error)
-        } receiveValue: { [weak self] _ in
-            self?.nextPage()
-        }.store(in: &cancellables)
+        viewModel.nextPage
+            .sink { error in
+                print(error)
+            } receiveValue: { [weak self] _ in
+                self?.nextPage()
+            }
+            .store(in: &cancellables)
         
-        viewModel.prevPage.sink { error in
-            print(error)
-        } receiveValue: { [weak self] _ in
-            self?.prevPage()
-        }.store(in: &cancellables)
+        viewModel.prevPage
+            .sink { error in
+                print(error)
+            } receiveValue: { [weak self] _ in
+                self?.prevPage()
+            }
+            .store(in: &cancellables)
         
-        viewModel.detailPage.sink { error in
-            print(error)
-        } receiveValue: { [weak self] character in
-            self?.navigateToDetail(character: character)
-        }.store(in: &cancellables)
+        viewModel.detailPage
+            .sink { error in
+                print(error)
+            } receiveValue: { [weak self] character in
+                self?.navigateToDetail(character: character)
+            }
+            .store(in: &cancellables)
     }
     
     func nextPage() {
-        self.showButtons()
+        self.showPageButtonsAndLabels()
         self.collectionCharacters.reloadData()
     }
     
     func prevPage() {
-        self.showButtons()
+        self.showPageButtonsAndLabels()
         self.collectionCharacters.reloadData()
     }
     
-    func anotherViewStyle() {
+    func viewStyle() {
         backImage.image = LocalImages.charactersImage
         backImage.contentMode = .scaleToFill
     }
@@ -97,12 +103,11 @@ private extension CharactersViewController {
     
     func pagesStyle() {
         pageView.backgroundColor = .clear
-        pagesLabel.text = "\(viewModel.countPage) / \(viewModel.model?.info?.pages  ?? 1)"
         pagesLabel.textColor = Color.secondColor
         pagesLabel.font = Font.size24
     }
     
-    func showButtons() {
+    func showPageButtonsAndLabels() {
         self.pagesLabel.text = "\(viewModel.countPage) / \(viewModel.model?.info?.pages ?? 1)"
         self.backButton.isHidden = viewModel.countPage == 1
         self.nextButton.isHidden = viewModel.countPage == viewModel.model?.info?.pages
